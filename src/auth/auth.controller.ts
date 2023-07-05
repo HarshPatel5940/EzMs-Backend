@@ -19,7 +19,7 @@ export class AuthController {
             return this.authService.signup(dto);
         } catch (error) {
             throw new HttpException(
-                'Something went wrong | INTERNAL SERVER ERROR',
+                'INTERNAL SERVER ERROR',
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
@@ -28,6 +28,13 @@ export class AuthController {
     @Post('signin')
     @HttpCode(HttpStatus.OK)
     signin(@Body() dto: AuthDto) {
-        return this.authService.signin(dto);
+        try {
+            return this.authService.signin(dto);
+        } catch (Error) {
+            throw new HttpException(
+                'INTERNAL SERVER ERROR',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 }

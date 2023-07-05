@@ -1,10 +1,10 @@
 {
-    "name": "temp",
-    "version": "0.0.1",
-    "description": "",
-    "author": "",
+    "name": "learning-nestjs",
+    "version": "0.0.2",
+    "description": "A Repo for learning nestjs and making a sample nestjs API.",
+    "author": "HarshPatel5940",
     "private": true,
-    "license": "MIT",
+    "license": "SEE LICENSE IN 'LICENSE'",
     "scripts": {
         "devdb:up": "docker compose up dev-db -d",
         "devdb:rm": "docker compose rm dev-db -s -f -v",

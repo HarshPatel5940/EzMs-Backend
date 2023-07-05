@@ -37,10 +37,7 @@ export class AuthService {
             });
             return returnUser;
         }
-        throw new HttpException(
-            `User of ${dto.email} already exsist`,
-            HttpStatus.FORBIDDEN,
-        );
+        throw new HttpException(`User already exsist`, HttpStatus.FORBIDDEN);
     }
 
     async signin(dto: AuthDto) {
