@@ -12,11 +12,56 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  hash      String
+  id    Int    @id @default(autoincrement())
+  email String @unique
+  hash  String
+
+  name     String?
+  Projects Project[]
+  role     Role      @default(unverified)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  projects  String[]
+
+  @@map("users")
+}
+
+model Project {
+  id   Int    @id @default(autoincrement())
+  slug String @unique
+
+  projectName String
+  teamName    String
+
+  users User[]
+
+  projectData projectData[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("projects")
+}
+
+model projectData {
+  id        Int    @id @default(autoincrement())
+  projectId String @unique
+
+  title       String
+  description String?
+  url         String?
+  imageUrl    String?
+
+  project Project @relation(fields: [projectId], references: [slug])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("projectdata")
+}
+
+enum Role {
+  unverified
+  verified
+  admin
 }

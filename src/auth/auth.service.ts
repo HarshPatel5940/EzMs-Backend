@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto } from './dto';
-import * as argon from 'argon2';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { PrismaService } from "src/prisma/prisma.service";
+import { AuthDto } from "./dto";
+import * as argon from "argon2";
+import { JwtService } from "@nestjs/jwt";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {
@@ -48,6 +48,7 @@ export class AuthService {
             select: {
                 email: true,
                 hash: true,
+                role: true,
             },
         });
 
@@ -62,22 +63,28 @@ export class AuthService {
 
         if (!VALID) {
             throw new HttpException(
-                'Incorrect Credentials',
+                "Incorrect Credentials",
                 HttpStatus.FORBIDDEN,
             );
         }
 
-        return this.signToken(USER.email);
+        return this.signToken(USER.email, USER.role);
     }
 
-    async signToken(email: string): Promise<{ accessToken: string }> {
+    async signToken(
+        email: string,
+        role: string,
+    ): Promise<{ accessToken: string }> {
         const PAYLOAD = {
-            email: email,
+            email,
+            role,
         };
-        const SECRET = this.config.get('JWT_SECRET');
+
+        const SECRET = this.config.get("JWT_SECRET");
         const TOKEN = await this.jwt.signAsync(PAYLOAD, {
-            expiresIn: '1h',
+            expiresIn: "1h",
             secret: SECRET,
+            issuer: "HarshPatel5940",
         });
 
         return {
