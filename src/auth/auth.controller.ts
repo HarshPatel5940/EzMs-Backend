@@ -10,6 +10,7 @@ import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
 import { PublicRoute } from "./auth/auth.decorator";
 
+@PublicRoute()
 @Controller("auth")
 export class AuthController {
     constructor(private authService: AuthService) {}

@@ -80,11 +80,12 @@ export class AuthService {
             role,
         };
 
-        const SECRET = this.config.get("JWT_SECRET");
+        const JWT_SECRET = this.config.get("JWT_SECRET");
+        const JWT_ISSUER = this.config.get("JWT_ISSUER");
         const TOKEN = await this.jwt.signAsync(PAYLOAD, {
             expiresIn: "1h",
-            secret: SECRET,
-            issuer: "HarshPatel5940",
+            secret: JWT_SECRET,
+            issuer: JWT_ISSUER || "HelloWorld",
         });
 
         return {

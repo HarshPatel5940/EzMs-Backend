@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Role, User } from "@prisma/client";
 import { config } from "dotenv";
 config();
 
@@ -13,5 +13,22 @@ export class PrismaService extends PrismaClient {
                 },
             },
         });
+    }
+
+    async CheckUserRole(email: string, role: Role): Promise<boolean> {
+        const res = await this.user.findFirst({
+            where: {
+                email: email,
+                role: role,
+            },
+            select: {
+                role: true,
+            },
+        });
+
+        if (!res) {
+            return false;
+        }
+        return true;
     }
 }

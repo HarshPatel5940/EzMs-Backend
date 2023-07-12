@@ -1,6 +1,8 @@
 import {
     CanActivate,
     ExecutionContext,
+    HttpException,
+    HttpStatus,
     Injectable,
     UnauthorizedException,
 } from "@nestjs/common";
@@ -8,7 +10,8 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { Request } from "express";
 import { Reflector } from "@nestjs/core";
-import { IS_PUBLIC_KEY } from "./auth.decorator";
+import { IS_PUBLIC_KEY, ROLES_KEY } from "./auth.decorator";
+import { PrismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,6 +19,7 @@ export class AuthGuard implements CanActivate {
         private readonly jwt: JwtService,
         private readonly config: ConfigService,
         private readonly reflector: Reflector,
+        private readonly prisma: PrismaService,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -27,21 +31,40 @@ export class AuthGuard implements CanActivate {
             return true;
         }
 
+        const RequiredRole = this.reflector.getAllAndOverride<string>(
+            ROLES_KEY,
+            [context.getHandler(), context.getClass()],
+        );
+
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
         if (!token) {
             throw new UnauthorizedException();
         }
+        const JWT_SECRET = this.config.get("JWT_SECRET");
+        const JWT_ISSUER = this.config.get("JWT_ISSUER");
+        let payload;
         try {
-            const payload = await this.jwt.verifyAsync(token, {
-                secret: this.config.get("JWT_SECRET"),
+            payload = await this.jwt.verifyAsync(token, {
+                secret: JWT_SECRET,
+                issuer: JWT_ISSUER,
             });
-            // 💡 We're assigning the payload to the request object here
-            // so that we can access it in our route handlers
-            request["user"] = payload;
         } catch {
-            throw new UnauthorizedException();
+            throw new HttpException("Invalid Token", HttpStatus.BAD_REQUEST, {
+                cause: new Error("Invalid Token."),
+            });
         }
+        if (!RequiredRole.includes(payload.role)) {
+            throw new HttpException(
+                "Unauthorized access",
+                HttpStatus.UNAUTHORIZED,
+                {
+                    cause: new Error("Unauthorized access"),
+                },
+            );
+        }
+        this.prisma.CheckUserRole(payload.email, payload.role);
+
         return true;
     }
 
