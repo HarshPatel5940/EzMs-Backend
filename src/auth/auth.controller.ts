@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthDto } from "./dto";
-import { PublicRoute } from "./auth/auth.decorator";
+import { PublicRoute } from "./guards/auth.decorator";
 
 @PublicRoute()
 @Controller("auth")
