@@ -20,8 +20,7 @@ export class UserController {
     @HttpCode(HttpStatus.OK)
     VerifyUser(@Body() dto: VerifyUserDto) {
         try {
-            // return this.userService.VerifyUser(dto);
-            return "hi";
+            return this.userService.VerifyUser(dto);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",
