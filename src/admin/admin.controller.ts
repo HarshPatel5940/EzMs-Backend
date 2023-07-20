@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    HttpException,
+    HttpStatus,
+    Post,
+} from "@nestjs/common";
 import { UserService } from "./admin.service";
 import { AuthRole, PublicRoute, Roles } from "src/auth/guards/auth.decorator";
 import { VerifyUserDto } from "./dto";
@@ -8,9 +16,17 @@ export class UserController {
     constructor(private userService: UserService) {}
 
     @Post("/verify/user")
-    @HttpCode(HttpStatus.OK)
     @AuthRole(Roles.Admin)
+    @HttpCode(HttpStatus.OK)
     VerifyUser(@Body() dto: VerifyUserDto) {
-        return this.userService.VerifyUser(dto);
+        try {
+            // return this.userService.VerifyUser(dto);
+            return "hi";
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 }
