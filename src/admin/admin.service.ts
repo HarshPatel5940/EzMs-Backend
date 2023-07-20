@@ -1,20 +1,62 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "src/prisma/prisma.service";
-import { VerifyUserDto } from "./dto";
+import { userEmailDto } from "./dto";
+import { PasswordService } from "src/auth/pwd.service";
+import { AuthDto } from "src/auth/dto";
 
 @Injectable()
 export class UserService {
-    constructor(private prisma: PrismaService, private config: ConfigService) {}
-    async  VerifyUser(dto: VerifyUserDto) {
-        const roleRes = await this.prisma.CheckUserRole(dto.email, "verified")
+    constructor(
+        private prisma: PrismaService,
+        private pwd: PasswordService,
+    ) {}
 
-        if(roleRes) {
-            throw new HttpException("User Already Verified", HttpStatus.BAD_REQUEST)
-        };
-       const verifyRes = await this.prisma.VerifyUser(dto.email)
+    async VerifyUser(dto: userEmailDto) {
+        const roleRes = await this.prisma.CheckUserRole(dto.email, "verified");
 
-       if(!verifyRes) {throw new HttpException("Something Went Wrong", HttpStatus.INTERNAL_SERVER_ERROR)};
-       return {message: "User Verified Successfully",  data:verifyRes }
+        if (roleRes) {
+            throw new HttpException(
+                "User Already Verified",
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+        const verifyRes = await this.prisma.VerifyUser(dto.email);
+
+        if (!verifyRes) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+        return { message: "User Verified Successfully", data: verifyRes };
+    }
+
+    async CreateUser(dto: userEmailDto) {
+        const USER = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+            select: { email: true },
+        });
+
+        if (USER) {
+            throw new HttpException(
+                `User already exsist`,
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        const PWD = await this.pwd.generateRandomPassword();
+        const createUserRes = await this.prisma.CreateUser({
+            email: dto.email,
+            password: PWD,
+        } as AuthDto);
+
+        if (!createUserRes) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return { message: "User Verified Successfully", data: createUserRes };
     }
 }

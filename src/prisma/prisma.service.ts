@@ -1,6 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaClient, Role, User } from "@prisma/client";
 import { config } from "dotenv";
+import { AuthDto } from "src/auth/dto";
+import * as argon from "argon2";
 config();
 
 @Injectable()
@@ -59,4 +61,28 @@ export class PrismaService extends PrismaClient {
         }
         return res;
     }
+
+    async CreateUser(
+        dto: AuthDto,
+    ): Promise<boolean | { email: string; createdAt: Date }> {
+        const HASH = await argon.hash(dto.password);
+        const res = await this.user.create({
+            data: {
+                email: dto.email,
+                hash: HASH,
+                name: dto.name,
+            },
+            select: {
+                email: true,
+                createdAt: true,
+            },
+        });
+
+        if (!res) {
+            return false;
+        }
+
+        return res;
+    }
 }
+``;
