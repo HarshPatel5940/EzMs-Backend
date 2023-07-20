@@ -24,20 +24,24 @@ export class AuthService {
             },
         });
 
-        if (!USER) {
-            const returnUser = await this.prisma.user.create({
-                data: {
-                    email: dto.email,
-                    hash: HASH,
-                },
-                select: {
-                    email: true,
-                    createdAt: true,
-                },
-            });
-            return returnUser;
+        if (USER) {
+            throw new HttpException(
+                `User already exsist`,
+                HttpStatus.FORBIDDEN,
+            );
         }
-        throw new HttpException(`User already exsist`, HttpStatus.FORBIDDEN);
+        const returnUser = await this.prisma.user.create({
+            data: {
+                email: dto.email,
+                hash: HASH,
+                name: dto.name,
+            },
+            select: {
+                email: true,
+                createdAt: true,
+            },
+        });
+        return returnUser;
     }
 
     async signin(dto: AuthDto) {
