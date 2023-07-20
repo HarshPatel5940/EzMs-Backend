@@ -57,6 +57,10 @@ export class UserService {
             );
         }
 
-        return { message: "User Verified Successfully", data: createUserRes };
+        return {
+            message: "User Verified Successfully",
+            data: createUserRes,
+            pwd: PWD,
+        };
     }
 }
