@@ -15,7 +15,7 @@ import { userEmailDto } from "./dto";
 export class UserController {
     constructor(private userService: UserService) {}
 
-    @Post("/verify/user")
+    @Patch("/verify/user")
     @AuthRole(Roles.Admin)
     @HttpCode(HttpStatus.OK)
     VerifyUser(@Body() dto: userEmailDto) {
@@ -29,10 +29,16 @@ export class UserController {
         }
     }
 
-    @Patch("/create/user")
+    @Post("/new/user")
     @AuthRole(Roles.Admin)
-    @HttpCode(HttpStatus.CREATED)
     CreateUser(@Body() dto: userEmailDto) {
-        return this.userService.CreateUser(dto);
+        try {
+            return this.userService.CreateUser(dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 }
