@@ -3,6 +3,8 @@ import { PrismaClient, Role, User } from "@prisma/client";
 import { config } from "dotenv";
 import { AuthDto } from "src/auth/dto";
 import * as argon from "argon2";
+import slugify from "slugify";
+import { projectNameDto } from "src/project/dto";
 config();
 
 @Injectable()
@@ -15,6 +17,19 @@ export class PrismaService extends PrismaClient {
                 },
             },
         });
+    }
+
+    async Slugify(text: string): Promise<string> {
+        const res = slugify(text, {
+            lower: true,
+            replacement: "-",
+            trim: true,
+        });
+        if (!text) {
+            throw new Error("No text provided");
+        }
+
+        return res;
     }
 
     async CheckUserRole(email: string, role: Role): Promise<boolean> {
@@ -62,6 +77,29 @@ export class PrismaService extends PrismaClient {
         return res;
     }
 
+    async CreateProject(
+        projectSlug: string,
+        projectName: string,
+        teamName: string,
+    ): Promise<boolean | { slug: string; createdAt: Date }> {
+        const res = await this.project.create({
+            data: {
+                slug: projectSlug,
+                projectName: projectName,
+                teamName: teamName,
+            },
+            select: {
+                slug: true,
+                createdAt: true,
+            },
+        });
+
+        if (!res) {
+            return false;
+        }
+        return res;
+    }
+
     async CreateUser(
         dto: AuthDto,
     ): Promise<boolean | { email: string; createdAt: Date }> {
@@ -85,4 +123,3 @@ export class PrismaService extends PrismaClient {
         return res;
     }
 }
-``;

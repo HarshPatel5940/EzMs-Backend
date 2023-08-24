@@ -20,7 +20,7 @@ export class UserService {
         if (!roleRes) {
             throw new HttpException(
                 "User Already Verified",
-                HttpStatus.BAD_REQUEST,
+                HttpStatus.CONFLICT,
             );
         }
         const verifyRes = await this.prisma.VerifyUser(dto.email);
@@ -41,10 +41,7 @@ export class UserService {
         });
 
         if (USER) {
-            throw new HttpException(
-                `User already exsist`,
-                HttpStatus.FORBIDDEN,
-            );
+            throw new HttpException(`User already exsist`, HttpStatus.CONFLICT);
         }
 
         const PWD = await this.pwd.generateRandomPassword();

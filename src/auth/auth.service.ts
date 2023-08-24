@@ -24,10 +24,7 @@ export class AuthService {
         });
 
         if (USER) {
-            throw new HttpException(
-                `User already exsist`,
-                HttpStatus.FORBIDDEN,
-            );
+            throw new HttpException(`User already exsist`, HttpStatus.CONFLICT);
         }
         const returnUser = await this.prisma.CreateUser(dto);
 
