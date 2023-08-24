@@ -13,7 +13,7 @@ import { projectCreateDto } from "./dto";
 export class ProjectController {
     constructor(private readonly projectService: ProjectService) {}
 
-    @AuthRole(Roles.Admin)
+    @AuthRole(Roles.Verified, Roles.Admin)
     @Post("/new")
     CreateProject(@Body() dto: projectCreateDto) {
         try {
