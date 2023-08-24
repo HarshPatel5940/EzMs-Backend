@@ -6,20 +6,40 @@ import { projectCreateDto, projectNameDto } from "./dto";
 export class ProjectService {
     constructor(private readonly prisma: PrismaService) {}
 
-    async checkProjectExsist(projectSlug: string): Promise<boolean> {
-        const PROJECT = await this.prisma.project.findFirst({
+    async GetProject(Slug: string) {
+        console.log(Slug);
+        const PROJECT = await this.prisma.project.findUnique({
             where: {
-                slug: projectSlug,
+                slug: `${Slug}`,
             },
             select: {
                 slug: true,
+                projectName: true,
+                teamName: true,
+                projectData: true,
+                users: true,
+                createdAt: true,
+                updatedAt: true,
             },
         });
 
         if (!PROJECT) {
             return false;
         }
-        return true;
+        return PROJECT;
+    }
+
+    async GetAllProjects() {
+        const PROJECTS = await this.prisma.project.findMany({
+            select: {
+                slug: true,
+            },
+        });
+
+        if (!PROJECTS) {
+            return false;
+        }
+        return PROJECTS;
     }
 
     async CreateProject(dto: projectCreateDto) {
@@ -27,7 +47,7 @@ export class ProjectService {
             `${dto.projectName} ${dto.teamName}`,
         );
 
-        const res = await this.checkProjectExsist(projectSlug);
+        const res = await this.GetProject(projectSlug);
 
         if (res) {
             throw new HttpException(
