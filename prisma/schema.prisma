@@ -23,6 +23,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  isDeleted Boolean @default(false)
+
   @@map("users")
 }
 
@@ -39,6 +41,8 @@ model Project {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  isDeleted Boolean @default(false)
 
   @@map("projects")
 }

@@ -8,9 +8,9 @@ import { ConfigService } from "@nestjs/config";
 @Injectable()
 export class AuthService {
     constructor(
-        private prisma: PrismaService,
-        private jwt: JwtService,
-        private config: ConfigService,
+        private readonly prisma: PrismaService,
+        private readonly jwt: JwtService,
+        private readonly config: ConfigService,
     ) {}
 
     async signup(dto: AuthDto) {

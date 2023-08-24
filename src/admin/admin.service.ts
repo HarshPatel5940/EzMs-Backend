@@ -7,14 +7,17 @@ import { AuthDto } from "src/auth/dto";
 @Injectable()
 export class UserService {
     constructor(
-        private prisma: PrismaService,
-        private pwd: PasswordService,
+        private readonly prisma: PrismaService,
+        private readonly pwd: PasswordService,
     ) {}
 
     async VerifyUser(dto: userEmailDto) {
-        const roleRes = await this.prisma.CheckUserRole(dto.email, "verified");
+        const roleRes = await this.prisma.CheckUserRole(
+            dto.email,
+            "unverified",
+        );
 
-        if (roleRes) {
+        if (!roleRes) {
             throw new HttpException(
                 "User Already Verified",
                 HttpStatus.BAD_REQUEST,

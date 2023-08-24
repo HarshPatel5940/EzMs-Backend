@@ -13,7 +13,7 @@ import { userEmailDto } from "./dto";
 
 @Controller("admin")
 export class UserController {
-    constructor(private userService: UserService) {}
+    constructor(private readonly userService: UserService) {}
 
     @Patch("/verify/user")
     @AuthRole(Roles.Admin)
