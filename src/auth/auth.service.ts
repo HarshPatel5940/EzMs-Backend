@@ -13,7 +13,10 @@ export class AuthService {
         private readonly config: ConfigService,
     ) {}
 
-    async signup(dto: AuthDto) {
+    async signup(dto: AuthDto): Promise<{
+        email: string;
+        createdAt: Date;
+    }> {
         const USER = await this.prisma.user.findUnique({
             where: {
                 email: dto.email,
@@ -31,7 +34,7 @@ export class AuthService {
         return returnUser;
     }
 
-    async signin(dto: AuthDto) {
+    async signin(dto: AuthDto): Promise<{ accessToken: string }> {
         const USER = await this.prisma.user.findUnique({
             where: {
                 email: dto.email,

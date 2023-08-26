@@ -1,10 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { PrismaClient, Role, User } from "@prisma/client";
+import { PrismaClient, Role } from "@prisma/client";
 import { config } from "dotenv";
 import { AuthDto } from "src/auth/dto";
 import * as argon from "argon2";
 import slugify from "slugify";
-import { projectNameDto } from "src/project/dto";
 config();
 
 @Injectable()
@@ -102,7 +101,7 @@ export class PrismaService extends PrismaClient {
 
     async CreateUser(
         dto: AuthDto,
-    ): Promise<boolean | { email: string; createdAt: Date }> {
+    ): Promise<{ email: string; createdAt: Date }> {
         const HASH = await argon.hash(dto.password);
         const res = await this.user.create({
             data: {
@@ -117,7 +116,10 @@ export class PrismaService extends PrismaClient {
         });
 
         if (!res) {
-            return false;
+            throw new HttpException(
+                `Prisma Error from CreateUser`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
         }
 
         return res;

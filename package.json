@@ -8,7 +8,7 @@
     "scripts": {
         "devdb:up": "docker compose up dev-db -d",
         "devdb:rm": "docker compose rm dev-db -s -f -v",
-        "prisma:deploy": "prisma migrate deploy",
+        "devdb:deploy": "prisma migrate deploy",
         "devdb:restart": "yarn devdb:rm && yarn devdb:up && sleep 1.5 && yarn prisma:deploy && echo \"\nDatabase Redeployed.\n\"",
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

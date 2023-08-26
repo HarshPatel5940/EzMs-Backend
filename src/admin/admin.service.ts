@@ -48,7 +48,7 @@ export class UserService {
         const createUserRes = await this.prisma.CreateUser({
             email: dto.email,
             password: PWD,
-        } as AuthDto);
+        });
 
         if (!createUserRes) {
             throw new HttpException(
