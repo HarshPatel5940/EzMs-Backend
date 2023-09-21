@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto } from "./dto";
+import { AuthDto } from "../shared/dto";
 import * as argon from "argon2";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -27,11 +27,9 @@ export class AuthService {
         });
 
         if (USER) {
-            throw new HttpException(`User already exsist`, HttpStatus.CONFLICT);
+            throw new HttpException(`User already exists`, HttpStatus.CONFLICT);
         }
-        const returnUser = await this.prisma.CreateUser(dto);
-
-        return returnUser;
+        return await this.prisma.CreateUser(dto);
     }
 
     async signin(dto: AuthDto): Promise<{ accessToken: string }> {
@@ -48,7 +46,7 @@ export class AuthService {
 
         if (!USER) {
             throw new HttpException(
-                `${dto.email} does not exsist`,
+                `${dto.email} does not exists`,
                 HttpStatus.FORBIDDEN,
             );
         }
@@ -78,7 +76,7 @@ export class AuthService {
         const JWT_ISSUER = this.config.get("JWT_ISSUER");
         const TOKEN = await this.jwt.signAsync(PAYLOAD, {
             expiresIn: "1h",
-            secret: JWT_SECRET,
+            secret: JWT_SECRET || "HelloWorld",
             issuer: JWT_ISSUER || "HelloWorld",
         });
 

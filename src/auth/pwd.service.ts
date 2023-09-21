@@ -4,8 +4,8 @@ import * as crypto from "crypto";
 @Injectable()
 export class PasswordService {
     async generateRandomPassword(length: number = 12): Promise<string> {
-        const alphabet =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=";
+        // noinspection SpellCheckingInspection // webstrom config
+        const alphabet = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_-+=`;
         const randomBytes = await new Promise<Buffer>((resolve, reject) => {
             crypto.randomBytes(length, (err, buf) => {
                 if (err) {

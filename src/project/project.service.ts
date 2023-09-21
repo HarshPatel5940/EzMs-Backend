@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { projectCreateDto, projectNameDto } from "./dto";
+import { projectCreateDto } from "../shared/dto";
 
 @Injectable()
 export class ProjectService {
@@ -51,7 +51,7 @@ export class ProjectService {
 
         if (res) {
             throw new HttpException(
-                "Project Already Exsist",
+                "Project Already Exists",
                 HttpStatus.CONFLICT,
             );
         }

@@ -1,18 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaClient, Role } from "@prisma/client";
 import { config } from "dotenv";
-import { AuthDto } from "src/auth/dto";
+import { AuthDto } from "../shared/dto";
 import * as argon from "argon2";
 import slugify from "slugify";
+import { ConfigService } from "@nestjs/config";
 config();
 
 @Injectable()
 export class PrismaService extends PrismaClient {
-    constructor() {
+    constructor(private readonly config: ConfigService) {
         super({
             datasources: {
                 db: {
-                    url: process.env.DATABASE_URL,
+                    url: config.get("DATABASE_URL"),
                 },
             },
         });
@@ -48,10 +49,7 @@ export class PrismaService extends PrismaClient {
             );
         }
 
-        if (res.role !== role) {
-            return false;
-        }
-        return true;
+        return res.role === role;
     }
 
     async VerifyUser(

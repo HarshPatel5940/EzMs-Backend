@@ -64,16 +64,15 @@ export class AuthGuard implements CanActivate {
             );
         }
 
-        const res = await this.prisma.CheckUserRole(
-            payload.email,
-            payload.role,
-        );
-
-        return res;
+        return await this.prisma.CheckUserRole(payload.email, payload.role);
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
-        const [type, token] = request.headers.authorization?.split(" ") ?? [];
+        const { authorization } = request.headers;
+        if (!authorization) {
+            return undefined;
+        }
+        const [type, token] = authorization.split(" ");
         return type === "Bearer" ? token : undefined;
     }
 }

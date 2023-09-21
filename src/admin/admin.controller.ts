@@ -8,8 +8,8 @@ import {
     Post,
 } from "@nestjs/common";
 import { UserService } from "./admin.service";
-import { AuthRole, Roles } from "src/auth/guards/auth.decorator";
-import { userEmailDto } from "./dto";
+import { AuthRole, Roles } from "src/shared/guards/auth.decorator";
+import { userEmailDto } from "../shared/dto";
 
 @Controller("admin")
 export class UserController {
