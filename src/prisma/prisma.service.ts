@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaClient, Role } from "@prisma/client";
 import { config } from "dotenv";
-import { AuthDto } from "../shared/dto";
+import { AuthDto, projectAccessDto } from "../shared/dto";
 import * as argon from "argon2";
 import slugify from "slugify";
 import { ConfigService } from "@nestjs/config";
@@ -44,7 +44,7 @@ export class PrismaService extends PrismaClient {
 
         if (!res) {
             throw new HttpException(
-                `${email} does not exsist`,
+                `${email} does not exists`,
                 HttpStatus.FORBIDDEN,
             );
         }
@@ -95,6 +95,43 @@ export class PrismaService extends PrismaClient {
             return false;
         }
         return res;
+    }
+    async DeleteProject(slug: string): Promise<boolean> {
+        const res = await this.project.delete({
+            where: {
+                slug: slug,
+            },
+        });
+
+        return !!res;
+    }
+
+    async UpdateProjectAccess(
+        dto: projectAccessDto,
+        slug: string,
+    ): Promise<{ data: projectAccessDto; updatedAt: Date }> {
+        const { AddAccess, RemoveAccess } = dto;
+
+        const { updatedAt } = await this.project.update({
+            where: {
+                slug: slug,
+            },
+            data: {
+                users: {
+                    connect: AddAccess.map((email) => ({
+                        email: email,
+                    })),
+                    disconnect: RemoveAccess.map((email) => ({
+                        email: email,
+                    })),
+                },
+            },
+            select: {
+                updatedAt: true,
+            },
+        });
+
+        return { data: dto, updatedAt: updatedAt };
     }
 
     async CreateUser(

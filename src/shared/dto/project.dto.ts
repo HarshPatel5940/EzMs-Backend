@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsString } from "class-validator";
 
 export class projectCreateDto {
     @IsString()
@@ -10,16 +10,10 @@ export class projectCreateDto {
     teamName: string;
 }
 
-export class projectNameDto {
-    @IsString()
-    @IsNotEmpty()
-    slug: string;
+export class projectAccessDto {
+    @IsArray()
+    AddAccess: string[];
 
-    @IsString()
-    @IsOptional()
-    projectName?: string;
-
-    @IsString()
-    @IsOptional()
-    teamName?: string;
+    @IsArray()
+    RemoveAccess: string[];
 }
