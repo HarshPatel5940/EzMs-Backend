@@ -40,7 +40,7 @@ export class UserService {
         });
 
         if (USER) {
-            throw new HttpException(`User already exsist`, HttpStatus.CONFLICT);
+            throw new HttpException(`User already exists`, HttpStatus.CONFLICT);
         }
 
         const PWD = await this.pwd.generateRandomPassword();

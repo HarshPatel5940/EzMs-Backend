@@ -2,7 +2,7 @@
 <h1> EzMs </h1>
 <p> A Power CMS API which is made using NestJS and Typescript</p>
 <p>
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <a href="https://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
   
 </div>
