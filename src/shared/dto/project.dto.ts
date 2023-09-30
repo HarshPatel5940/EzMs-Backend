@@ -1,19 +1,14 @@
-import { IsArray, IsNotEmpty, IsString } from "class-validator";
+import { z } from "zod";
 
-export class projectCreateDto {
-    @IsString()
-    @IsNotEmpty()
-    projectName: string;
+export const projectCreateSchema = z.object({
+    projectName: z.string().min(3).max(30),
+    teamName: z.string().min(3).max(30),
+});
 
-    @IsString()
-    @IsNotEmpty()
-    teamName: string;
-}
+export const projectAccessSchema = z.object({
+    AddAccess: z.array(z.string()),
+    RemoveAccess: z.array(z.string()),
+});
 
-export class projectAccessDto {
-    @IsArray()
-    AddAccess: string[];
-
-    @IsArray()
-    RemoveAccess: string[];
-}
+export type projectCreateDto = z.infer<typeof projectCreateSchema>;
+export type projectAccessDto = z.infer<typeof projectAccessSchema>;
