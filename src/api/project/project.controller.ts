@@ -7,11 +7,17 @@ import {
     HttpStatus,
     Param,
     Patch,
-    Post, UsePipes
+    Post,
+    UsePipes,
 } from "@nestjs/common";
 import { ProjectService } from "./project.service";
 import { AuthRole, Roles } from "../../shared/guards/auth.decorator";
-import { projectAccessDto, projectAccessSchema, projectCreateDto, projectCreateSchema } from "../../shared/dto";
+import {
+    projectAccessDto,
+    projectAccessSchema,
+    projectCreateDto,
+    projectCreateSchema,
+} from "../../shared/dto";
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 
 @Controller("project")
