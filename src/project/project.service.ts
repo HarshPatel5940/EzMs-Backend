@@ -15,7 +15,6 @@ export class ProjectService {
             select: {
                 slug: true,
                 projectName: true,
-                teamName: true,
                 projectData: true,
                 users: true,
                 createdAt: true,
@@ -43,10 +42,8 @@ export class ProjectService {
     }
 
     async CreateProject(dto: projectCreateDto) {
-        const projectSlug = await this.prisma.Slugify(
-            `${dto.projectName} ${dto.teamName}`,
-        );
-
+        const projectName = dto.projectName;
+        const projectSlug = await this.prisma.Slugify(projectName);
         const res = await this.GetProject(projectSlug);
 
         if (res) {
@@ -56,11 +53,7 @@ export class ProjectService {
             );
         }
 
-        return await this.prisma.CreateProject(
-            projectSlug,
-            dto.projectName,
-            dto.teamName,
-        );
+        return await this.prisma.CreateProject({ projectName, projectSlug });
     }
 
     async DeleteProject(Slug: string) {

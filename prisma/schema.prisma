@@ -31,12 +31,9 @@ model User {
 model Project {
   id   Int    @id @default(autoincrement())
   slug String @unique
-
   projectName String
-  teamName    String
 
   users User[]
-
   projectData projectData[]
 
   createdAt DateTime @default(now())

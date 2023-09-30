@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaClient, Role } from "@prisma/client";
 import { config } from "dotenv";
-import { AuthDto, projectAccessDto } from "../shared/dto";
+import { AuthDto, projectAccessDto, projectDto } from "../shared/dto";
 import * as argon from "argon2";
 import slugify from "slugify";
 import { ConfigService } from "@nestjs/config";
@@ -74,16 +74,14 @@ export class PrismaService extends PrismaClient {
         return res;
     }
 
-    async CreateProject(
-        projectSlug: string,
-        projectName: string,
-        teamName: string,
-    ): Promise<boolean | { slug: string; createdAt: Date }> {
+    async CreateProject({
+        projectName,
+        projectSlug,
+    }: projectDto): Promise<boolean | { slug: string; createdAt: Date }> {
         const res = await this.project.create({
             data: {
                 slug: projectSlug,
                 projectName: projectName,
-                teamName: teamName,
             },
             select: {
                 slug: true,
