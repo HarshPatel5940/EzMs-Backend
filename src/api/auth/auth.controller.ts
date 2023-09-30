@@ -8,9 +8,9 @@ import {
     UsePipes,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AuthDto, AuthSchema } from "../shared/dto";
-import { PublicRoute } from "../shared/guards/auth.decorator";
-import { ZodValidationPipe } from "../shared/pipes/zodPipe";
+import { AuthDto, AuthSchema } from "../../shared/dto";
+import { PublicRoute } from "../../shared/guards/auth.decorator";
+import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 
 @PublicRoute()
 @Controller("auth")

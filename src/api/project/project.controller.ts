@@ -10,8 +10,8 @@ import {
     Post,
 } from "@nestjs/common";
 import { ProjectService } from "./project.service";
-import { AuthRole, Roles } from "../shared/guards/auth.decorator";
-import { projectAccessDto, projectCreateDto } from "../shared/dto";
+import { AuthRole, Roles } from "../../shared/guards/auth.decorator";
+import { projectAccessDto, projectCreateDto } from "../../shared/dto";
 
 @Controller("project")
 export class ProjectController {

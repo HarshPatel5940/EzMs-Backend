@@ -3,7 +3,7 @@ import { ProjectController } from "./project.controller";
 import { ProjectService } from "./project.service";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { PasswordService } from "src/auth/pwd.service";
+import { PasswordService } from "src/api/auth/pwd.service";
 import { APP_GUARD } from "@nestjs/core";
 import { AuthGuard } from "src/shared/guards/auth.guard";
 
