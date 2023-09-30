@@ -7,11 +7,12 @@ import {
     HttpStatus,
     Param,
     Patch,
-    Post,
+    Post, UsePipes
 } from "@nestjs/common";
 import { ProjectService } from "./project.service";
 import { AuthRole, Roles } from "../../shared/guards/auth.decorator";
-import { projectAccessDto, projectCreateDto } from "../../shared/dto";
+import { projectAccessDto, projectAccessSchema, projectCreateDto, projectCreateSchema } from "../../shared/dto";
+import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 
 @Controller("project")
 export class ProjectController {
@@ -45,6 +46,7 @@ export class ProjectController {
 
     @AuthRole(Roles.Admin)
     @Post("/new")
+    @UsePipes(new ZodValidationPipe(projectCreateSchema))
     CreateProject(@Body() dto: projectCreateDto) {
         try {
             return this.projectService.CreateProject(dto);
@@ -70,6 +72,7 @@ export class ProjectController {
     }
     @AuthRole(Roles.Admin)
     @Patch("/:slug/access")
+    @UsePipes(new ZodValidationPipe(projectAccessSchema))
     UpdateProjectAccess(
         @Body() dto: projectAccessDto,
         @Param("slug") slug: string,
