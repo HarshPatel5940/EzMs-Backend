@@ -47,6 +47,7 @@ export class UserService {
         const createUserRes = await this.prisma.CreateUser({
             email: dto.email,
             password: PWD,
+            name: dto.email.split("@")[0] || "No Name",
         });
 
         if (!createUserRes) {

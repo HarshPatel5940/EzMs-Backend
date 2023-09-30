@@ -5,10 +5,12 @@ import {
     HttpException,
     HttpStatus,
     Post,
+    UsePipes,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { AuthDto } from "../shared/dto";
+import { AuthDto, AuthSchema } from "../shared/dto";
 import { PublicRoute } from "../shared/guards/auth.decorator";
+import { ZodValidationPipe } from "../shared/pipes/zodPipe";
 
 @PublicRoute()
 @Controller("auth")
@@ -16,6 +18,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post("signup")
+    @UsePipes(new ZodValidationPipe(AuthSchema))
     signup(@Body() dto: AuthDto) {
         try {
             return this.authService.signup(dto);
@@ -28,6 +31,7 @@ export class AuthController {
     }
 
     @Post("signin")
+    @UsePipes(new ZodValidationPipe(AuthSchema))
     @HttpCode(HttpStatus.OK)
     signin(@Body() dto: AuthDto) {
         try {

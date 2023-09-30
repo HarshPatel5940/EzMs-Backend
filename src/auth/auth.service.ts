@@ -32,7 +32,7 @@ export class AuthService {
         return await this.prisma.CreateUser(dto);
     }
 
-    async signin(dto: AuthDto): Promise<{ accessToken: string }> {
+    async signin(dto: AuthDto) {
         const USER = await this.prisma.user.findUnique({
             where: {
                 email: dto.email,
@@ -63,10 +63,7 @@ export class AuthService {
         return this.signToken(USER.email, USER.role);
     }
 
-    async signToken(
-        email: string,
-        role: string,
-    ): Promise<{ accessToken: string }> {
+    async signToken(email: string, role: string) {
         const PAYLOAD = {
             email,
             role,
@@ -82,6 +79,7 @@ export class AuthService {
 
         return {
             accessToken: TOKEN,
+            createdAt: new Date(),
         };
     }
 }

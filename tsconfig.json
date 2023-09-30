@@ -21,6 +21,6 @@
 		"noUncheckedIndexedAccess": true,
 		"types": ["./env.d.ts"]
 	},
-	"include": ["./src/**/*"],
+	"include": ["./src/**/*", "./test/**/*"],
 	"exclude": ["node_modules", "dist"]
 }
