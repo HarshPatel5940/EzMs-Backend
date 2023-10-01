@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { PrismaClient, Role } from "@prisma/client";
-import { config } from "dotenv";
-import { AuthDto, projectAccessDto, projectDto } from "../shared/dto";
-import * as argon from "argon2";
-import slugify from "slugify";
 import { ConfigService } from "@nestjs/config";
+import { PrismaClient, Role } from "@prisma/client";
+import * as argon from "argon2";
+import { config } from "dotenv";
+import slugify from "slugify";
+import { AuthDto, projectAccessDto, projectDto } from "../shared/dto";
+
 config();
 
 @Injectable()
@@ -94,6 +95,7 @@ export class PrismaService extends PrismaClient {
         }
         return res;
     }
+
     async DeleteProject(slug: string): Promise<boolean> {
         const res = await this.project.delete({
             where: {

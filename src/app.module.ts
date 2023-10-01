@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
-import { AuthModule } from "./api/auth/auth.module";
 import { UserModule } from "./api/admin/admin.module";
-import { PrismaModule } from "./prisma/prisma.module";
+import { AuthModule } from "./api/auth/auth.module";
 import { ProjectModule } from "./api/project/project.module";
+import { PrismaModule } from "./prisma/prisma.module";
 import { LoggerMiddleware } from "./shared/middlewares/logger";
 
 @Module({

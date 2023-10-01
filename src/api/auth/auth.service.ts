@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { JwtService } from "@nestjs/jwt";
+import * as argon from "argon2";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto } from "../../shared/dto";
-import * as argon from "argon2";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class AuthService {

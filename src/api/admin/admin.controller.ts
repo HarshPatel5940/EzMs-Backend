@@ -7,9 +7,9 @@ import {
     Patch,
     Post,
 } from "@nestjs/common";
-import { UserService } from "./admin.service";
 import { AuthRole, Roles } from "src/shared/guards/auth.decorator";
 import { userEmailDto } from "../../shared/dto";
+import { UserService } from "./admin.service";
 
 @Controller("admin")
 export class UserController {
