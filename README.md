@@ -1,6 +1,6 @@
 <div align="center">
 <h1> EzMs </h1>
-<p> A Power CMS API which is made using NestJS and Typescript</p>
+<p> Versatile CMS API Crafted with NestJS and TypeScript </p>
 <p>
   <a href="https://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
@@ -8,7 +8,7 @@
 </div>
 
 ## Description
-> Todo
+> This repository contains a powerful CMS API developed using NestJS and TypeScript. Need to add detailed description of the project.
 
 ## Installation
 
