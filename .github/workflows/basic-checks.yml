@@ -24,7 +24,7 @@ jobs:
       - name: Install pnpm
         run: |
           npm install -g pnpm@8
-          echo "::set-env name=PNPM_BIN_PATH::$(npm bin -g)"
+          echo "export PNPM_BIN_PATH=$(npm bin -g)" >> $GITHUB_ENV
 
   prettier:
     runs-on: ubuntu-latest
