@@ -11,29 +11,42 @@ on:
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
 
-      - name: Install pnpm
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
         run: |
-          npm install -g pnpm@8
-          echo "export PNPM_BIN_PATH=$(npm bin -g)" >> $GITHUB_ENV
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Prettier
-        run: |
-          ${{ env.PNPM_BIN_PATH }}/pnpm run format:check
+        run: pnpm run format:check
 
-      - name: Eslint
-        run: |
-          ${{ env.PNPM_BIN_PATH }}/pnpm run lint
+      - name: ESLint
+        run: pnpm run lint
 
       - name: Build
-        run: |
-          ${{ env.PNPM_BIN_PATH }}/pnpm run build
+        run: pnpm run build
