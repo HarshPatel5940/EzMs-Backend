@@ -1,4 +1,4 @@
-name: Basic Checks
+name: Build
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * 1'
 
 jobs:
-  install-pnpm:
+  lint-and-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,34 +26,14 @@ jobs:
           npm install -g pnpm@8
           echo "export PNPM_BIN_PATH=$(npm bin -g)" >> $GITHUB_ENV
 
-  prettier:
-    runs-on: ubuntu-latest
-    needs: install-pnpm
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: |
-          ${{ env.PNPM_BIN_PATH }}/pnpm install
-
       - name: Prettier
         run: |
           ${{ env.PNPM_BIN_PATH }}/pnpm run format:check
 
-  eslint:
-    runs-on: ubuntu-latest
-    needs: install-pnpm
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: |
-          ${{ env.PNPM_BIN_PATH }}/pnpm install
-
       - name: Eslint
         run: |
           ${{ env.PNPM_BIN_PATH }}/pnpm run lint
+
+      - name: Build
+        run: |
+          ${{ env.PNPM_BIN_PATH }}/pnpm run build
