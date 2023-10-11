@@ -6,9 +6,11 @@ import {
     HttpStatus,
     Patch,
     Post,
+    UsePipes,
 } from "@nestjs/common";
 import { AuthRole, Roles } from "src/shared/guards/auth.decorator";
-import { userEmailDto } from "../../shared/dto";
+import { userEmailDto, userEmailSchema } from "../../shared/dto";
+import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 import { UserService } from "./admin.service";
 
 @Controller("admin")
@@ -18,7 +20,8 @@ export class UserController {
     @Patch("/verify/user")
     @AuthRole(Roles.Admin)
     @HttpCode(HttpStatus.OK)
-    VerifyUser(@Body() dto: userEmailDto) {
+    @UsePipes(new ZodValidationPipe(userEmailSchema))
+    VerifyUser(@Body() dto: Omit<userEmailDto, "name">) {
         try {
             return this.userService.VerifyUser(dto);
         } catch (error) {
@@ -31,6 +34,7 @@ export class UserController {
 
     @Post("/new/user")
     @AuthRole(Roles.Admin)
+    @UsePipes(new ZodValidationPipe(userEmailSchema))
     CreateUser(@Body() dto: userEmailDto) {
         try {
             return this.userService.CreateUser(dto);
