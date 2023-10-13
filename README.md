@@ -4,11 +4,13 @@
 <p>
   <a href="https://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
-  
+
 </div>
 
 ## Description
-> This repository contains a powerful CMS API developed using NestJS and TypeScript. Need to add detailed description of the project.
+
+> This repository contains a powerful CMS API developed using NestJS and TypeScript. Need to add detailed description of
+> the project.
 
 ## Installation
 
