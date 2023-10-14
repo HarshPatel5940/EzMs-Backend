@@ -16,6 +16,7 @@ import { ProjectService } from "./project.service";
         JwtService,
         ConfigService,
         PasswordService,
+        // TODO: Add AWS Service
         {
             provide: APP_GUARD,
             useClass: AuthGuard,

@@ -1,6 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { Express } from "express";
 import { PrismaService } from "src/prisma/prisma.service";
-import { projectAccessDto, projectCreateDto } from "../../shared/dto";
+import {
+    projectAccessDto,
+    projectCreateDto,
+    ProjectDataDto,
+} from "../../shared/dto";
 
 @Injectable()
 export class ProjectService {
@@ -73,7 +78,7 @@ export class ProjectService {
         return await this.prisma.DeleteProject(Slug);
     }
 
-    async UpdateProjectAccess(dto: projectAccessDto, slug: string) {
+    async UpdateProjectAccess(slug: string, dto: projectAccessDto) {
         const PROJECT = await this.prisma.project.findUnique({
             where: {
                 slug: `${slug}`,
@@ -88,5 +93,18 @@ export class ProjectService {
         }
 
         return await this.prisma.UpdateProjectAccess(dto, slug);
+    }
+
+    async AddProjectData(
+        slug: string,
+        dto: ProjectDataDto,
+        file: Express.Multer.File,
+    ) {
+        console.log(slug, dto, file);
+
+        // TODO: Add Project Data from prisma
+        // this.prisma.
+        // TODO: Upload Project Data to S3
+        // this.aws.
     }
 }

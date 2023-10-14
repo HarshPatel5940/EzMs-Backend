@@ -13,6 +13,15 @@ export const projectAccessSchema = z.object({
     RemoveAccess: z.array(z.string()),
 });
 
+export const projectDataSchema = z.object({
+    projectId: z.string(),
+    title: z.string(),
+    description: z.string().optional(),
+    url: z.string().url().optional(),
+    imageUrl: z.string().url().optional(),
+});
+
 export type projectCreateDto = z.infer<typeof projectCreateSchema>;
 export type projectDto = z.infer<typeof projectSchema>;
 export type projectAccessDto = z.infer<typeof projectAccessSchema>;
+export type ProjectDataDto = z.infer<typeof projectDataSchema>;

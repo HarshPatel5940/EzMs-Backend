@@ -4,7 +4,12 @@ import { PrismaClient, Role } from "@prisma/client";
 import * as argon from "argon2";
 import { config } from "dotenv";
 import slugify from "slugify";
-import { AuthDto, projectAccessDto, projectDto } from "../shared/dto";
+import {
+    AuthDto,
+    projectAccessDto,
+    ProjectDataDto,
+    projectDto,
+} from "../shared/dto";
 
 config();
 
@@ -158,5 +163,14 @@ export class PrismaService extends PrismaClient {
         }
 
         return res;
+    }
+
+    async AddProjectData(slug: string, dto: ProjectDataDto, url: string) {
+        const res = await this.project.create({
+            data: {
+            
+            },
+            select: {},
+        });
     }
 }
