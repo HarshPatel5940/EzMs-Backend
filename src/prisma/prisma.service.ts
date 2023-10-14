@@ -166,11 +166,6 @@ export class PrismaService extends PrismaClient {
     }
 
     async AddProjectData(slug: string, dto: ProjectDataDto, url: string) {
-        const res = await this.project.create({
-            data: {
-            
-            },
-            select: {},
-        });
+        // TODO: Implement storing the data and link of s3 file
     }
 }

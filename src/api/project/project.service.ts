@@ -102,9 +102,9 @@ export class ProjectService {
     ) {
         console.log(slug, dto, file);
 
-        // TODO: Add Project Data from prisma
-        // this.prisma.
         // TODO: Upload Project Data to S3
         // this.aws.
+        // TODO: Add Project Data from prisma
+        // this.prisma.
     }
 }

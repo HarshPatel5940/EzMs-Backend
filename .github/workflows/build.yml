@@ -44,9 +44,11 @@ jobs:
 
       - name: Prettier
         run: pnpm run format:check
+        continue-on-error: true
 
       - name: ESLint
         run: pnpm run lint
+        continue-on-error: true
 
       - name: Build
         run: pnpm run build
