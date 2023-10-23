@@ -54,6 +54,11 @@ export class AuthGuard implements CanActivate {
                 cause: new Error("Invalid Token."),
             });
         }
+
+        if (payload.role === "admin") {
+            return await this.prisma.CheckUserRole(payload.email, payload.role);
+        }
+
         if (!RequiredRole.includes(payload.role)) {
             throw new HttpException(
                 "Unauthorized access",
