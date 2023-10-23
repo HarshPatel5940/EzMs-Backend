@@ -12,11 +12,12 @@ import {
     Patch,
     Post,
     UploadedFile,
+    UseInterceptors,
     UsePipes,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 import { Express } from "express";
-import { Multer } from "multer";
 
 import {
     projectAccessDto,
@@ -26,7 +27,11 @@ import {
     ProjectDataDto,
     projectDataSchema,
 } from "../../shared/dto";
-import { AuthRole, Roles } from "../../shared/guards/auth.decorator";
+import {
+    AuthRole,
+    PublicRoute,
+    Roles,
+} from "../../shared/guards/auth.decorator";
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 import { ProjectService } from "./project.service";
 
@@ -107,15 +112,19 @@ export class ProjectController {
 
     @AuthRole(Roles.Verified)
     @Post("/:slug/data/new")
-    @UsePipes(new ZodValidationPipe(projectDataSchema))
+    @PublicRoute()
+    @UseInterceptors(FileInterceptor("image"))
+    // TODO: Fix this pipe cause it will be receiving stuff in the form of multipart body form
+    // @UsePipes(new ZodValidationPipe(projectDataSchema))
     CreateProjectData(
         @Body() dto: ProjectDataDto,
         @Param("slug") slug: string,
         @UploadedFile(
             new ParseFilePipe({
                 validators: [
-                    new MaxFileSizeValidator({ maxSize: 1000 }),
-                    new FileTypeValidator({ fileType: "image/jpeg" }),
+                    new FileTypeValidator({
+                        fileType: /image\/(jpeg|png|jpg)/,
+                    }),
                 ],
             }),
         )

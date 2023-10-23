@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    Logger,
+    OnModuleInit,
+} from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaClient, Role } from "@prisma/client";
 import * as argon from "argon2";
@@ -14,15 +20,32 @@ import {
 config();
 
 @Injectable()
-export class PrismaService extends PrismaClient {
+export class PrismaService extends PrismaClient implements OnModuleInit {
     constructor(private readonly config: ConfigService) {
-        super({
-            datasources: {
-                db: {
-                    url: config.get("DATABASE_URL"),
-                },
-            },
-        });
+        super();
+        const uriRegExp =
+            /^mysql:\/\/([a-zA-Z0-9_]+):(.\S+)@([a-zA-Z0-9-.]+)\//;
+        const url = this.config.get("DATABASE_URL");
+        if (!url) {
+            Logger.error("DATABASE_URL not found", "CONFIG");
+            throw Error("[CONFIG] DATABASE_URL Not Found");
+        }
+        Logger.debug("DATABASE_URL Found", "CONFIG");
+        if (!uriRegExp.exec(url)) {
+            Logger.error("DATABASE_URL is not valid", "CONFIG");
+            throw Error("[CONFIG] DATABASE_URL Not Valid");
+        }
+        Logger.debug("DATABASE_URL is Valid", "CONFIG");
+    }
+
+    async onModuleInit() {
+        try {
+            await this.$connect();
+            Logger.debug("Connected to Database", "Prisma");
+        } catch (error) {
+            Logger.error("Could Not Connect to Database", "PRISMA");
+            Logger.debug(error, "PRISMA");
+        }
     }
 
     async Slugify(text: string): Promise<string> {
@@ -50,7 +73,7 @@ export class PrismaService extends PrismaClient {
 
         if (!res) {
             throw new HttpException(
-                `${email} does not exists`,
+                "Email does not exists",
                 HttpStatus.FORBIDDEN,
             );
         }

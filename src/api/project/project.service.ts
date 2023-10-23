@@ -1,15 +1,20 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Express } from "express";
+import { Multer } from "multer";
 import { PrismaService } from "src/prisma/prisma.service";
 import {
     projectAccessDto,
     projectCreateDto,
     ProjectDataDto,
 } from "../../shared/dto";
+import { SupabaseService } from "../../supabase/supabase.service";
 
 @Injectable()
 export class ProjectService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly supabase: SupabaseService,
+    ) {}
 
     async GetProject(Slug: string) {
         console.log(Slug);
@@ -62,14 +67,7 @@ export class ProjectService {
     }
 
     async DeleteProject(Slug: string) {
-        const PROJECT = await this.prisma.project.findUnique({
-            where: {
-                slug: `${Slug}`,
-            },
-            select: {
-                slug: true,
-            },
-        });
+        const PROJECT = await this.GetProject(Slug);
 
         if (!PROJECT) {
             throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
@@ -78,21 +76,13 @@ export class ProjectService {
         return await this.prisma.DeleteProject(Slug);
     }
 
-    async UpdateProjectAccess(slug: string, dto: projectAccessDto) {
-        const PROJECT = await this.prisma.project.findUnique({
-            where: {
-                slug: `${slug}`,
-            },
-            select: {
-                slug: true,
-            },
-        });
-
+    async UpdateProjectAccess(Slug: string, dto: projectAccessDto) {
+        const PROJECT = await this.GetProject(Slug);
         if (!PROJECT) {
             throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
         }
 
-        return await this.prisma.UpdateProjectAccess(dto, slug);
+        return await this.prisma.UpdateProjectAccess(dto, Slug);
     }
 
     async AddProjectData(
@@ -100,11 +90,19 @@ export class ProjectService {
         dto: ProjectDataDto,
         file: Express.Multer.File,
     ) {
-        console.log(slug, dto, file);
+        console.log(slug, dto);
 
-        // TODO: Upload Project Data to S3
-        // this.aws.
-        // TODO: Add Project Data from prisma
-        // this.prisma.
+        try {
+            const link = await this.supabase.uploadFile(file);
+            console.log("=>", link);
+            // TODO: Add Project Data from prisma
+            // this.prisma.
+        } catch (error) {
+            Logger.debug(error);
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 }
