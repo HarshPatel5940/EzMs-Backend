@@ -27,38 +27,41 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
             /^mysql:\/\/([a-zA-Z0-9_]+):(.\S+)@([a-zA-Z0-9-.]+)\//;
         const url = this.config.get("DATABASE_URL");
         if (!url) {
-            Logger.error("DATABASE_URL not found", "CONFIG");
+            Logger.error("DATABASE_URL not found", "PrismaLoader");
             throw Error("[CONFIG] DATABASE_URL Not Found");
         }
-        Logger.debug("DATABASE_URL Found", "CONFIG");
+        Logger.debug("DATABASE_URL Found", "PrismaLoader");
         if (!uriRegExp.exec(url)) {
-            Logger.error("DATABASE_URL is not valid", "CONFIG");
+            Logger.error("DATABASE_URL is not valid", "PrismaLoader");
             throw Error("[CONFIG] DATABASE_URL Not Valid");
         }
-        Logger.debug("DATABASE_URL is Valid", "CONFIG");
+        Logger.debug("DATABASE_URL is Valid", "PrismaLoader");
     }
 
     async onModuleInit() {
         try {
             await this.$connect();
-            Logger.debug("Connected to Database", "Prisma");
+            Logger.debug("Connected to Database", "PrismaLoader");
         } catch (error) {
-            Logger.error("Could Not Connect to Database", "PRISMA");
+            Logger.error("Could Not Connect to Database", "PrismaLoader");
             Logger.debug(error, "PRISMA");
         }
     }
 
     async Slugify(text: string): Promise<string> {
-        const res = slugify(text, {
+        if (!text) {
+            Logger.error("Slugify Error | No String Provided", "Slugify");
+            throw new HttpException(
+                "Slugify Error | No String Provided",
+                HttpStatus.BAD_REQUEST,
+            );
+        }
+
+        return slugify(text, {
             lower: true,
             replacement: "-",
             trim: true,
         });
-        if (!text) {
-            throw new Error("No text provided");
-        }
-
-        return res;
     }
 
     async CheckUserRole(email: string, role: Role): Promise<boolean> {

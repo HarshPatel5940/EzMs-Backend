@@ -12,7 +12,7 @@ export class HttpLoggerMiddleware implements NestMiddleware {
         response.on("finish", () => {
             const { statusCode } = response;
 
-            let logMsg = `${method} ${originalUrl} ${statusCode} - ${userAgent} - ${hostname} `;
+            let logMsg = ` ${statusCode} - ${method} - ${originalUrl} - ${hostname} `;
             if (method !== "GET") {
                 logMsg += `- ${JSON.stringify(body)} `;
             }
