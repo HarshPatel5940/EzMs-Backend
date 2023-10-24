@@ -23,17 +23,17 @@ config();
 export class PrismaService extends PrismaClient implements OnModuleInit {
     constructor(private readonly config: ConfigService) {
         super();
-        const uriRegExp =
-            /^mysql:\/\/([a-zA-Z0-9_]+):(.\S+)@([a-zA-Z0-9-.]+)\//;
-        const url = this.config.get("DATABASE_URL");
+        const url = this.config.get("DATABASE_URL") as string;
         if (!url) {
             Logger.error("DATABASE_URL not found", "PrismaLoader");
             throw Error("[CONFIG] DATABASE_URL Not Found");
         }
         Logger.debug("DATABASE_URL Found", "PrismaLoader");
-        if (!uriRegExp.exec(url)) {
-            Logger.error("DATABASE_URL is not valid", "PrismaLoader");
-            throw Error("[CONFIG] DATABASE_URL Not Valid");
+
+        if (!url.startsWith("postgres://")) {
+            Logger.error("DATABASE_URL is Not Valid", "PrismaLoader");
+            Logger.debug(url, "PRISMA");
+            throw Error("[CONFIG] DATABASE_URL Not Valid ");
         }
         Logger.debug("DATABASE_URL is Valid", "PrismaLoader");
     }
@@ -84,9 +84,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         return res.role === role;
     }
 
-    async VerifyUser(
-        email: string,
-    ): Promise<boolean | { email: string; role: string }> {
+    async VerifyUser(email: string): Promise<
+        | boolean
+        | {
+              email: string;
+              role: string;
+          }
+    > {
         const res = await this.user.update({
             where: {
                 email: email,
@@ -106,10 +110,13 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         return res;
     }
 
-    async CreateProject({
-        projectName,
-        projectSlug,
-    }: projectDto): Promise<boolean | { slug: string; createdAt: Date }> {
+    async CreateProject({ projectName, projectSlug }: projectDto): Promise<
+        | boolean
+        | {
+              slug: string;
+              createdAt: Date;
+          }
+    > {
         const res = await this.project.create({
             data: {
                 slug: projectSlug,
@@ -140,7 +147,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     async UpdateProjectAccess(
         dto: projectAccessDto,
         slug: string,
-    ): Promise<{ data: projectAccessDto; updatedAt: Date }> {
+    ): Promise<{
+        data: projectAccessDto;
+        updatedAt: Date;
+    }> {
         const { AddAccess, RemoveAccess } = dto;
 
         const { updatedAt } = await this.project.update({
@@ -165,9 +175,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         return { data: dto, updatedAt: updatedAt };
     }
 
-    async CreateUser(
-        dto: AuthDto,
-    ): Promise<{ email: string; createdAt: Date }> {
+    async CreateUser(dto: AuthDto): Promise<{
+        email: string;
+        createdAt: Date;
+    }> {
         const HASH = await argon.hash(dto.password);
         const res = await this.user.create({
             data: {
@@ -192,6 +203,30 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
 
     async AddProjectData(slug: string, dto: ProjectDataDto, url: string) {
-        // TODO: Implement storing the data and link of s3 file
+        const res = await this.projectData.create({
+            data: {
+                title: dto.title,
+                description: dto.description,
+                url: dto.url,
+                imageUrl: url,
+                project: {
+                    connect: {
+                        slug: slug,
+                    },
+                },
+            },
+            select: {
+                imageUrl: true,
+            },
+        });
+
+        if (!res) {
+            throw new HttpException(
+                `Prisma Error from AddProjectData`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return res;
     }
 }
