@@ -7,7 +7,6 @@ export class HttpLoggerMiddleware implements NestMiddleware {
 
     use(request: Request, response: Response, next: NextFunction): void {
         const { hostname, method, originalUrl, body } = request;
-        const userAgent = request.get("user-agent") || "";
 
         response.on("finish", () => {
             const { statusCode } = response;

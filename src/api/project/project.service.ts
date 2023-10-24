@@ -17,7 +17,6 @@ export class ProjectService {
     ) {}
 
     async GetProject(Slug: string) {
-        console.log(Slug);
         const PROJECT = await this.prisma.project.findUnique({
             where: {
                 slug: `${Slug}`,
@@ -90,13 +89,10 @@ export class ProjectService {
         dto: ProjectDataDto,
         file: Express.Multer.File,
     ) {
-        console.log(slug, dto);
-
         try {
             const link = await this.supabase.uploadFile(file);
-            console.log("=>", link);
-            // TODO: Add Project Data from prisma
-            // this.prisma.
+            await this.prisma.AddProjectData(slug, dto, link);
+            return { ...dto, ImageUrl: link };
         } catch (error) {
             Logger.debug(error);
             throw new HttpException(

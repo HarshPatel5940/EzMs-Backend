@@ -18,7 +18,6 @@ export const projectDataSchema = z.object({
     title: z.string(),
     description: z.string().optional(),
     url: z.string().url().optional(),
-    imageUrl: z.string().url().optional(),
 });
 
 export type projectCreateDto = z.infer<typeof projectCreateSchema>;
