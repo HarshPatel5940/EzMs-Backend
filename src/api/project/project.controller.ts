@@ -6,7 +6,6 @@ import {
     Get,
     HttpException,
     HttpStatus,
-    MaxFileSizeValidator,
     Param,
     ParseFilePipe,
     Patch,
@@ -25,7 +24,6 @@ import {
     projectCreateDto,
     projectCreateSchema,
     ProjectDataDto,
-    projectDataSchema,
 } from "../../shared/dto";
 import {
     AuthRole,

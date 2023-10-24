@@ -1,4 +1,3 @@
-import { TSC_LOG_ERROR_PREFIX } from "@nestjs/cli/lib/compiler/swc/constants";
 import {
     HttpException,
     HttpStatus,
@@ -62,7 +61,7 @@ export class SupabaseService implements OnModuleInit {
             .from(this.SupabaseBucket)
             .upload(filePath, file.buffer);
 
-        if (error) {
+        if (error || !data) {
             Logger.error(error, "Supabase");
             throw new HttpException(
                 "Something Went Wrong While Uploading",
