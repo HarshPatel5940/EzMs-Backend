@@ -2,7 +2,11 @@ import { HttpException, HttpStatus, PipeTransform } from "@nestjs/common";
 import { ZodObject } from "zod";
 
 export class ZodValidationPipe implements PipeTransform {
-    constructor(private schema: ZodObject<any>) {}
+    private readonly schema;
+
+    constructor(schema: ZodObject<any>) {
+        this.schema = schema;
+    }
 
     transform(value: unknown) {
         try {
