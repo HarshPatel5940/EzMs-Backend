@@ -1,0 +1,18 @@
+meta {
+  name: Create Project
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{URL}}/api/project/new
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "projectName":"hp-yt"
+  }
+  
+}

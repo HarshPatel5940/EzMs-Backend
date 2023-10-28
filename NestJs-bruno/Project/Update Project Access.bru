@@ -1,0 +1,18 @@
+meta {
+  name: Update Project Access
+  type: http
+  seq: 2
+}
+
+patch {
+  url: {{URL}}/api/project/cms/access
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "AddAccess": ["test3@gmail.com", "test@gmail.com", "test2@gmail.com"],
+      "RemoveAccess": ["test4e@gmail.com"]
+  }
+}
