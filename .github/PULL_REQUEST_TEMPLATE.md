@@ -23,13 +23,6 @@ list any relevant details for your test configuration
 - [ ] Test A
 - [ ] Test B
 
-**Test Configuration**:
-
-- Firmware version:
-- Hardware:
-- Toolchain:
-- SDK:
-
 # Checklist:
 
 - [ ] My code follows the style guidelines of this project
