@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * 1'
 
 jobs:
-  lint:
+  esLint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,5 +39,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Install dependencies
+        run: pnpm install
+
       - name: ESLint
-        run: pnpx eslint "{src,apps,libs,test}/**/*.ts"
+        run: pnpm run lint
+
