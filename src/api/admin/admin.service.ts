@@ -11,7 +11,7 @@ export class UserService {
     ) {}
 
     async VerifyUser(dto: userEmailDto) {
-        const roleRes = await this.prisma.CheckUserRole(
+        const roleRes = await this.prisma.CompareUserRole(
             dto.email,
             "unverified",
         );

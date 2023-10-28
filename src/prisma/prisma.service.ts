@@ -64,7 +64,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         });
     }
 
-    async CheckUserRole(email: string, role: Role): Promise<boolean> {
+    async CompareUserRole(email: string, role: Role): Promise<boolean> {
         const res = await this.user.findUnique({
             where: {
                 email: email,
@@ -84,14 +84,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         return res.role === role;
     }
 
-    async VerifyUser(email: string): Promise<
-        | boolean
-        | {
-              email: string;
-              role: string;
-          }
-    > {
-        const res = await this.user.update({
+    async VerifyUser(email: string) {
+        return await this.user.update({
             where: {
                 email: email,
             },
@@ -103,21 +97,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 role: true,
             },
         });
-
-        if (!res) {
-            return false;
-        }
-        return res;
     }
 
-    async CreateProject({ projectName, projectSlug }: projectDto): Promise<
-        | boolean
-        | {
-              slug: string;
-              createdAt: Date;
-          }
-    > {
-        const res = await this.project.create({
+    async CreateProject({ projectName, projectSlug }: projectDto) {
+        return await this.project.create({
             data: {
                 slug: projectSlug,
                 projectName: projectName,
@@ -127,30 +110,22 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 createdAt: true,
             },
         });
-
-        if (!res) {
-            return false;
-        }
-        return res;
     }
 
-    async DeleteProject(slug: string): Promise<boolean> {
-        const res = await this.project.delete({
+    async DeleteProject(slug: string) {
+        return await this.project.delete({
             where: {
                 slug: slug,
             },
+            select: {
+                slug: true,
+                isDeleted: true,
+                updatedAt: true,
+            },
         });
-
-        return !!res;
     }
 
-    async UpdateProjectAccess(
-        dto: projectAccessDto,
-        slug: string,
-    ): Promise<{
-        data: projectAccessDto;
-        updatedAt: Date;
-    }> {
+    async UpdateProjectAccess(dto: projectAccessDto, slug: string) {
         const { AddAccess, RemoveAccess } = dto;
 
         const { updatedAt } = await this.project.update({

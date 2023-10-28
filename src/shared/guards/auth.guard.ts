@@ -56,7 +56,10 @@ export class AuthGuard implements CanActivate {
         }
 
         if (payload.role === "admin") {
-            return await this.prisma.CheckUserRole(payload.email, payload.role);
+            return await this.prisma.CompareUserRole(
+                payload.email,
+                payload.role,
+            );
         }
 
         if (!RequiredRole.includes(payload.role)) {
@@ -69,7 +72,7 @@ export class AuthGuard implements CanActivate {
             );
         }
 
-        return await this.prisma.CheckUserRole(payload.email, payload.role);
+        return await this.prisma.CompareUserRole(payload.email, payload.role);
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
