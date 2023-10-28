@@ -1,4 +1,4 @@
-name: Build
+name: Lint and format
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * 1'
 
 jobs:
-  build:
+  linttier:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,5 +42,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build
-        run: pnpm run build
+      - name: Prettier
+        run: pnpm run format:check
+        continue-on-error: true
+
+      - name: ESLint
+        run: pnpm run lint
