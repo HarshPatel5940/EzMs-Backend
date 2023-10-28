@@ -1,4 +1,4 @@
-name: Lint and format
+name: Format
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
     - cron: '0 0 * * 1'
 
 jobs:
-  linttier:
+  prettier:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,9 +39,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      #      - name: Install dependencies
-      #        run: pnpm install
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Prettier
         run: pnpx prettier --check "src/**/*.ts" "test/**/*.ts"
-
