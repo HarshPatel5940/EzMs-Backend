@@ -78,36 +78,6 @@ export class ProjectController {
         }
     }
 
-    @AuthRole(Roles.Admin)
-    @Delete("/:slug")
-    DeleteProject(@Param("slug") dto: string) {
-        try {
-            return this.projectService.DeleteProject(dto);
-        } catch (error) {
-            throw new HttpException(
-                "Something Went Wrong",
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-    }
-
-    @AuthRole(Roles.Admin)
-    @Patch("/:slug/access")
-    @UsePipes(new ZodValidationPipe(projectAccessSchema))
-    UpdateProjectAccess(
-        @Body() dto: projectAccessDto,
-        @Param("slug") slug: string,
-    ) {
-        try {
-            return this.projectService.UpdateProjectAccess(slug, dto);
-        } catch (error) {
-            throw new HttpException(
-                "Something Went Wrong",
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-    }
-
     @AuthRole(Roles.Verified)
     @Post("/:slug/data/new")
     @PublicRoute()
@@ -130,6 +100,42 @@ export class ProjectController {
     ) {
         try {
             return this.projectService.AddProjectData(slug, dto, file);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    // TODO: UpdateProject
+
+    // TODO: UpdateProjectData()
+
+    // TODO: DeleteProjectData()
+
+    @AuthRole(Roles.Admin)
+    @Delete("/:slug")
+    DeleteProject(@Param("slug") dto: string) {
+        try {
+            return this.projectService.DeleteProject(dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @AuthRole(Roles.Admin)
+    @Patch("/:slug/access")
+    @UsePipes(new ZodValidationPipe(projectAccessSchema))
+    UpdateProjectAccess(
+        @Body() dto: projectAccessDto,
+        @Param("slug") slug: string,
+    ) {
+        try {
+            return this.projectService.UpdateProjectAccess(slug, dto);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",

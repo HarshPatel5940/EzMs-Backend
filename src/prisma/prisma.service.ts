@@ -21,6 +21,8 @@ config();
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+    // TODO:  public success: boolean = false;
+
     constructor(private readonly config: ConfigService) {
         super();
         const url = this.config.get("DATABASE_URL") as string;

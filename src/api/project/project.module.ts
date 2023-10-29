@@ -7,10 +7,11 @@ import { AuthGuard } from "src/shared/guards/auth.guard";
 import { SupabaseService } from "../../supabase/supabase.service";
 import { ProjectController } from "./project.controller";
 import { ProjectService } from "./project.service";
+import { PublicProjectController } from "./public.controller";
 
 @Module({
     imports: [],
-    controllers: [ProjectController],
+    controllers: [ProjectController, PublicProjectController],
     providers: [
         ProjectService,
         SupabaseService,

@@ -8,9 +8,10 @@ export class HealthController {
     @Get()
     @PublicRoute()
     async check() {
+        // TODO: Implement Public Property of Services and showcase it here
         return {
             status: "ok",
-            uptime: process.uptime(),
+            timestamp: Date.now(),
         };
     }
 }
