@@ -15,7 +15,7 @@ import {
     projectAccessDto,
     ProjectDataDto,
     projectDto,
-} from "../shared/dto";
+} from "../../shared/dto";
 
 config();
 

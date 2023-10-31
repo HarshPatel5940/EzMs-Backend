@@ -4,13 +4,13 @@ import { APP_GUARD } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { PasswordService } from "src/api/auth/pwd.service";
 import { AuthGuard } from "src/shared/guards/auth.guard";
-import { UserController } from "./admin.controller";
-import { UserService } from "./admin.service";
+import { AdminController } from "./admin.controller";
+import { AdminService } from "./admin.service";
 
 @Module({
-    controllers: [UserController],
+    controllers: [AdminController],
     providers: [
-        UserService,
+        AdminService,
         // ? The Below Are dependencies of the AuthGuard
         JwtService,
         ConfigService,
@@ -22,4 +22,4 @@ import { UserService } from "./admin.service";
     ],
 })
 //
-export class UserModule {}
+export class AdminModule {}

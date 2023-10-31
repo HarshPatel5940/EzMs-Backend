@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PasswordService } from "src/api/auth/pwd.service";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "src/api/database/prisma.service";
 import { userEmailDto } from "../../shared/dto";
 
 @Injectable()
-export class UserService {
+export class AdminService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly pwd: PasswordService,
