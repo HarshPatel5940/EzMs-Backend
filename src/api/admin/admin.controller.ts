@@ -11,11 +11,11 @@ import {
 import { AuthRole, Roles } from "src/shared/guards/auth.decorator";
 import { userEmailDto, userEmailSchema } from "../../shared/dto";
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
-import { UserService } from "./admin.service";
+import { AdminService } from "./admin.service";
 
 @Controller("admin")
-export class UserController {
-    constructor(private readonly userService: UserService) {}
+export class AdminController {
+    constructor(private readonly userService: AdminService) {}
 
     @Patch("/verify/user")
     @AuthRole(Roles.Admin)

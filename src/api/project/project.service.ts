@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Express } from "express";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "src/api/database/prisma.service";
 import {
     projectAccessDto,
     projectCreateDto,
     ProjectDataDto,
 } from "../../shared/dto";
-import { SupabaseService } from "../../supabase/supabase.service";
+import { SupabaseService } from "../database/supabase.service";
 
 @Injectable()
 export class ProjectService {

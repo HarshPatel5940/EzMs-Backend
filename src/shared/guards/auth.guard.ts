@@ -10,7 +10,7 @@ import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "src/api/database/prisma.service";
 import { IS_PUBLIC_KEY, ROLES_KEY } from "./auth.decorator";
 
 @Injectable()
