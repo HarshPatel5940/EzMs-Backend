@@ -63,4 +63,29 @@ export class AdminService {
             pwd: PWD,
         };
     }
+
+    async DeleteUser(dto: userEmailDto) {
+        const USER = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+            select: { email: true },
+        });
+
+        if (!USER) {
+            throw new HttpException(`User doesn't exist`, HttpStatus.CONFLICT);
+        }
+
+        const deleteUserRes = await this.prisma.DeleteUser(dto.email);
+
+        if (!deleteUserRes) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return {
+            message: "User Deleted Successfully",
+            data: deleteUserRes,
+        };
+    }
 }
