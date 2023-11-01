@@ -14,7 +14,6 @@ import { PublicProjectController } from "./public.controller";
     controllers: [ProjectController, PublicProjectController],
     providers: [
         ProjectService,
-        SupabaseService,
         // ? The Below Are dependencies of the AuthGuard
         JwtService,
         ConfigService,

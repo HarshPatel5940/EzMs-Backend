@@ -115,12 +115,31 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
 
     async DeleteProject(slug: string) {
-        return await this.project.delete({
+        return await this.project.update({
             where: {
                 slug: slug,
             },
+            data: {
+                isDeleted: true,
+            },
             select: {
                 slug: true,
+                isDeleted: true,
+                updatedAt: true,
+            },
+        });
+    }
+
+    async DeleteUser(email: string) {
+        return await this.user.update({
+            where: {
+                email: email,
+            },
+            data: {
+                isDeleted: true,
+            },
+            select: {
+                email: true,
                 isDeleted: true,
                 updatedAt: true,
             },

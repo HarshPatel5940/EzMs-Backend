@@ -15,7 +15,7 @@ import { AdminService } from "./admin.service";
 
 @Controller("admin")
 export class AdminController {
-    constructor(private readonly userService: AdminService) {}
+    constructor(private readonly adminService: AdminService) {}
 
     @Patch("/verify/user")
     @AuthRole(Roles.Admin)
@@ -23,7 +23,7 @@ export class AdminController {
     @UsePipes(new ZodValidationPipe(userEmailSchema))
     VerifyUser(@Body() dto: Omit<userEmailDto, "name">) {
         try {
-            return this.userService.VerifyUser(dto);
+            return this.adminService.VerifyUser(dto);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",
@@ -37,7 +37,7 @@ export class AdminController {
     @UsePipes(new ZodValidationPipe(userEmailSchema))
     CreateUser(@Body() dto: userEmailDto) {
         try {
-            return this.userService.CreateUser(dto);
+            return this.adminService.CreateUser(dto);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",
@@ -47,4 +47,17 @@ export class AdminController {
     }
 
     // TODO: DeleteUser()
+    @Post("/delete/user")
+    @AuthRole(Roles.Admin)
+    @UsePipes(new ZodValidationPipe(userEmailSchema))
+    DeleteUser(@Body() dto: userEmailDto) {
+        try {
+            return this.adminService.DeleteUser(dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
 }
