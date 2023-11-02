@@ -11,6 +11,7 @@ import { Express } from "express";
 
 @Injectable()
 export class SupabaseService implements OnModuleInit {
+    public isConnected: boolean = false;
     private readonly supabaseUrl;
     private readonly supabaseKey;
     private readonly SupabaseBucket;
@@ -44,6 +45,7 @@ export class SupabaseService implements OnModuleInit {
             throw new Error("Something Went Wrong While Fetching Bucket");
         }
 
+        this.isConnected = true;
         Logger.debug("Supabase Credentials Verified", "SupabaseLoader");
     }
 

@@ -21,7 +21,7 @@ config();
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-    // TODO:  public success: boolean = false;
+    public isConnected: boolean = false;
 
     constructor(private readonly config: ConfigService) {
         super();
@@ -43,6 +43,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     async onModuleInit() {
         try {
             await this.$connect();
+            this.isConnected = true;
             Logger.debug("Connected to Database", "PrismaLoader");
         } catch (error) {
             Logger.error("Could Not Connect to Database", "PrismaLoader");

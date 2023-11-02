@@ -1,16 +1,27 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Logger } from "@nestjs/common";
 import { PublicRoute } from "../../shared/guards/auth.decorator";
+import { PrismaService } from "../database/prisma.service";
+import { SupabaseService } from "../database/supabase.service";
 
 @Controller("health")
 export class HealthController {
-    constructor() {}
+    constructor(
+        private readonly supabase: SupabaseService,
+        private readonly prisma: PrismaService,
+    ) {}
 
     @Get()
     @PublicRoute()
     async check() {
-        // TODO: Implement Public Property of Services and showcase it here
+        const status =
+            this.supabase.isConnected && this.prisma.isConnected
+                ? "All Services Operational"
+                : "Few Services Not Operational";
+
+        Logger.log(status, "HealthModule");
         return {
-            status: "ok",
+            data: "Pong 🏓",
+            Status: status,
             timestamp: Date.now(),
         };
     }

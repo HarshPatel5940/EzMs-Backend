@@ -1,4 +1,3 @@
-// TODO: Think of a way to merge prisma and supabase services into a singular database service
 import { Global, Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "./prisma.service";

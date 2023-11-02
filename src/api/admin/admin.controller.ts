@@ -46,7 +46,6 @@ export class AdminController {
         }
     }
 
-    // TODO: DeleteUser()
     @Post("/delete/user")
     @AuthRole(Roles.Admin)
     @UsePipes(new ZodValidationPipe(userEmailSchema))
