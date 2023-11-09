@@ -24,6 +24,7 @@ import {
     projectCreateDto,
     projectCreateSchema,
     ProjectDataDto,
+    projectDataSchema,
 } from "../../shared/dto";
 import {
     AuthRole,
@@ -33,7 +34,6 @@ import {
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 import { ProjectService } from "./project.service";
 
-// type ExpressFile = (new Multer()).File
 @Controller("project")
 export class ProjectController {
     constructor(private readonly projectService: ProjectService) {}
@@ -108,9 +108,36 @@ export class ProjectController {
         }
     }
 
-    // TODO: UpdateProject
+    @AuthRole(Roles.Admin)
+    @Patch("/:slug")
+    @UsePipes(new ZodValidationPipe(projectCreateSchema))
+    UpdateProject(@Param("slug") slug: string, @Body() dto: projectCreateDto) {
+        try {
+            return this.projectService.UpdateProject(slug, dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
 
-    // TODO: UpdateProjectData()
+    @AuthRole(Roles.Verified)
+    @Patch("/:slug/data/:id")
+    @UsePipes(new ZodValidationPipe(projectDataSchema))
+    UpdateProjectData(
+        @Param("slug") slug: string,
+        @Body() dto: ProjectDataDto,
+    ) {
+        try {
+            return this.projectService.UpdateProjectData(slug, dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
 
     // TODO: DeleteProjectData()
 

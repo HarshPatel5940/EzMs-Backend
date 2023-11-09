@@ -10,12 +10,7 @@ import { PrismaClient, Role } from "@prisma/client";
 import * as argon from "argon2";
 import { config } from "dotenv";
 import slugify from "slugify";
-import {
-    AuthDto,
-    projectAccessDto,
-    ProjectDataDto,
-    projectDto,
-} from "../../shared/dto";
+import { AuthDto, projectAccessDto, ProjectDataDto } from "../../shared/dto";
 
 config();
 
@@ -102,11 +97,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         });
     }
 
-    async CreateProject({ projectName, projectSlug }: projectDto) {
+    async CreateProject(
+        projectSlug: string,
+        projectName: string,
+        projectDesc: string,
+    ) {
         return await this.project.create({
             data: {
                 slug: projectSlug,
                 projectName: projectName,
+                projectDesc: projectDesc,
             },
             select: {
                 slug: true,
@@ -142,6 +142,50 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
             select: {
                 email: true,
                 isDeleted: true,
+                updatedAt: true,
+            },
+        });
+    }
+
+    async UpdateProject(
+        slug: string,
+        projectSlug: string,
+        projectName: string,
+        projectDesc: string,
+    ) {
+        return await this.project.update({
+            where: {
+                slug: slug,
+            },
+            data: {
+                slug: projectSlug,
+                projectName: projectName,
+                projectDesc: projectDesc,
+            },
+            select: {
+                slug: true,
+                updatedAt: true,
+            },
+        });
+    }
+
+    async UpdateProjectData(
+        slug: string,
+        title: string,
+        description: string,
+        url: string,
+    ) {
+        return await this.projectData.update({
+            where: {
+                id: slug,
+            },
+            data: {
+                title: title,
+                description: description,
+                url: url,
+            },
+            select: {
+                id: true,
                 updatedAt: true,
             },
         });

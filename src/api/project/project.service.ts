@@ -50,7 +50,7 @@ export class ProjectService {
     }
 
     async CreateProject(dto: projectCreateDto) {
-        const projectName = dto.projectName;
+        const { projectName, projectDesc } = dto;
         const projectSlug = await this.prisma.Slugify(projectName);
         const res = await this.GetProject(projectSlug);
 
@@ -61,7 +61,42 @@ export class ProjectService {
             );
         }
 
-        return await this.prisma.CreateProject({ projectName, projectSlug });
+        return await this.prisma.CreateProject(
+            projectSlug,
+            projectName,
+            projectDesc,
+        );
+    }
+
+    async UpdateProject(slug: string, dto: projectCreateDto) {
+        const { projectName, projectDesc } = dto;
+        const projectSlug = await this.prisma.Slugify(projectName);
+        const res = await this.GetProject(projectSlug);
+
+        if (res) {
+            throw new HttpException(
+                "Project With the New Name Already Exists",
+                HttpStatus.CONFLICT,
+            );
+        }
+
+        return await this.prisma.UpdateProject(
+            slug,
+            projectSlug,
+            projectName,
+            projectDesc,
+        );
+    }
+
+    async UpdateProjectData(slug: string, dto: ProjectDataDto) {
+        const { title, description, url } = dto;
+
+        return await this.prisma.UpdateProjectData(
+            slug,
+            title,
+            description || "No Description Provided",
+            url || "No Url Provided",
+        );
     }
 
     async DeleteProject(Slug: string) {

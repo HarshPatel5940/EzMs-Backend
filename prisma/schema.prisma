@@ -30,9 +30,10 @@ model User {
 }
 
 model Project {
-  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  slug        String @unique
+  id          String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug        String  @unique
   projectName String
+  projectDesc String?
 
   users       User[]
   projectData ProjectData[]

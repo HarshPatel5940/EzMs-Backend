@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const projectCreateSchema = z.object({
     projectName: z.string().min(3).max(30),
+    projectDesc: z.string().max(100).optional().default(""),
 });
 
 export const projectSchema = z.object({
@@ -14,7 +15,6 @@ export const projectAccessSchema = z.object({
 });
 
 export const projectDataSchema = z.object({
-    projectId: z.string(),
     title: z.string(),
     description: z.string().optional(),
     url: z.string().url().optional(),
