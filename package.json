@@ -9,7 +9,7 @@
     "devdb:up": "docker compose up dev-db -d",
     "devdb:rm": "docker compose rm dev-db -s -f -v",
     "devdb:deploy": "prisma migrate deploy && prisma db push && prisma generate",
-    "devdb:restart": "yarn devdb:rm && yarn devdb:up && sleep 1.5 && yarn devdb:deploy && echo \"\nDatabase Redeployed.\n\"",
+    "devdb:restart": "pnpm devdb:rm && pnpm devdb:up && sleep 1.5 && pnpm devdb:deploy && echo \"\nDatabase Redeployed.\n\"",
     "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
