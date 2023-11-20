@@ -11,11 +11,11 @@ import {
 import { AuthRole, Roles } from "src/shared/guards/auth.decorator";
 import { userEmailDto, userEmailSchema } from "../../shared/dto";
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
-import { UserService } from "./admin.service";
+import { AdminService } from "./admin.service";
 
 @Controller("admin")
-export class UserController {
-    constructor(private readonly userService: UserService) {}
+export class AdminController {
+    constructor(private readonly adminService: AdminService) {}
 
     @Patch("/verify/user")
     @AuthRole(Roles.Admin)
@@ -23,7 +23,7 @@ export class UserController {
     @UsePipes(new ZodValidationPipe(userEmailSchema))
     VerifyUser(@Body() dto: Omit<userEmailDto, "name">) {
         try {
-            return this.userService.VerifyUser(dto);
+            return this.adminService.VerifyUser(dto);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",
@@ -37,7 +37,21 @@ export class UserController {
     @UsePipes(new ZodValidationPipe(userEmailSchema))
     CreateUser(@Body() dto: userEmailDto) {
         try {
-            return this.userService.CreateUser(dto);
+            return this.adminService.CreateUser(dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Post("/delete/user")
+    @AuthRole(Roles.Admin)
+    @UsePipes(new ZodValidationPipe(userEmailSchema))
+    DeleteUser(@Body() dto: userEmailDto) {
+        try {
+            return this.adminService.DeleteUser(dto);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",

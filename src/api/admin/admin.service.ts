@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PasswordService } from "src/api/auth/pwd.service";
-import { PrismaService } from "src/prisma/prisma.service";
+import { PrismaService } from "src/api/database/prisma.service";
 import { userEmailDto } from "../../shared/dto";
 
 @Injectable()
-export class UserService {
+export class AdminService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly pwd: PasswordService,
@@ -61,6 +61,31 @@ export class UserService {
             message: "User Verified Successfully",
             data: createUserRes,
             pwd: PWD,
+        };
+    }
+
+    async DeleteUser(dto: userEmailDto) {
+        const USER = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+            select: { email: true },
+        });
+
+        if (!USER) {
+            throw new HttpException(`User doesn't exist`, HttpStatus.CONFLICT);
+        }
+
+        const deleteUserRes = await this.prisma.DeleteUser(dto.email);
+
+        if (!deleteUserRes) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return {
+            message: "User Deleted Successfully",
+            data: deleteUserRes,
         };
     }
 }

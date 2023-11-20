@@ -33,7 +33,6 @@ import {
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 import { ProjectService } from "./project.service";
 
-// type ExpressFile = (new Multer()).File
 @Controller("project")
 export class ProjectController {
     constructor(private readonly projectService: ProjectService) {}
@@ -78,6 +77,80 @@ export class ProjectController {
         }
     }
 
+    @AuthRole(Roles.Verified)
+    @Post("/:slug/data/new")
+    @PublicRoute()
+    @UseInterceptors(FileInterceptor("image"))
+    // @UsePipes(new ZodValidationPipe(projectDataSchema)) TODO
+    CreateProjectData(
+        @Body() dto: ProjectDataDto,
+        @Param("slug") slug: string,
+        @UploadedFile(
+            new ParseFilePipe({
+                validators: [
+                    new FileTypeValidator({
+                        fileType: /image\/(jpeg|png|jpg)/,
+                    }),
+                ],
+            }),
+        )
+        file: Express.Multer.File,
+    ) {
+        try {
+            return this.projectService.AddProjectData(slug, dto, file);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @AuthRole(Roles.Admin)
+    @Patch("/:slug")
+    // @UsePipes(new ZodValidationPipe(projectCreateSchema)) TODO
+    UpdateProject(@Param("slug") slug: string, @Body() dto: projectCreateDto) {
+        try {
+            return this.projectService.UpdateProject(slug, dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @AuthRole(Roles.Verified)
+    @Patch("/:slug/data/:id")
+    // @UsePipes(new ZodValidationPipe(projectDataSchema)) TODO
+    UpdateProjectData(
+        @Param("slug") slug: string,
+        @Param("id") id: string,
+        @Body() dto: ProjectDataDto,
+    ) {
+        try {
+            return this.projectService.UpdateProjectData(slug, id, dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @AuthRole(Roles.Verified)
+    @Delete("/:slug/data/:id")
+    DeleteProjectData(@Param("slug") slug: string, @Param("id") id: string) {
+        try {
+            return this.projectService.DeleteProjectData(slug, id);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
     @AuthRole(Roles.Admin)
     @Delete("/:slug")
     DeleteProject(@Param("slug") dto: string) {
@@ -100,36 +173,6 @@ export class ProjectController {
     ) {
         try {
             return this.projectService.UpdateProjectAccess(slug, dto);
-        } catch (error) {
-            throw new HttpException(
-                "Something Went Wrong",
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
-        }
-    }
-
-    @AuthRole(Roles.Verified)
-    @Post("/:slug/data/new")
-    @PublicRoute()
-    @UseInterceptors(FileInterceptor("image"))
-    // TODO: Fix this pipe cause it will be receiving stuff in the form of multipart body form
-    // @UsePipes(new ZodValidationPipe(projectDataSchema))
-    CreateProjectData(
-        @Body() dto: ProjectDataDto,
-        @Param("slug") slug: string,
-        @UploadedFile(
-            new ParseFilePipe({
-                validators: [
-                    new FileTypeValidator({
-                        fileType: /image\/(jpeg|png|jpg)/,
-                    }),
-                ],
-            }),
-        )
-        file: Express.Multer.File,
-    ) {
-        try {
-            return this.projectService.AddProjectData(slug, dto, file);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",

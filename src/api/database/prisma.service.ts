@@ -10,17 +10,14 @@ import { PrismaClient, Role } from "@prisma/client";
 import * as argon from "argon2";
 import { config } from "dotenv";
 import slugify from "slugify";
-import {
-    AuthDto,
-    projectAccessDto,
-    ProjectDataDto,
-    projectDto,
-} from "../shared/dto";
+import { AuthDto, projectAccessDto, ProjectDataDto } from "../../shared/dto";
 
 config();
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+    public isConnected: boolean = false;
+
     constructor(private readonly config: ConfigService) {
         super();
         const url = this.config.get("DATABASE_URL") as string;
@@ -41,6 +38,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     async onModuleInit() {
         try {
             await this.$connect();
+            this.isConnected = true;
             Logger.debug("Connected to Database", "PrismaLoader");
         } catch (error) {
             Logger.error("Could Not Connect to Database", "PrismaLoader");
@@ -99,11 +97,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         });
     }
 
-    async CreateProject({ projectName, projectSlug }: projectDto) {
+    async CreateProject(
+        projectSlug: string,
+        projectName: string,
+        projectDesc: string,
+    ) {
         return await this.project.create({
             data: {
                 slug: projectSlug,
                 projectName: projectName,
+                projectDesc: projectDesc,
             },
             select: {
                 slug: true,
@@ -113,13 +116,76 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
 
     async DeleteProject(slug: string) {
-        return await this.project.delete({
+        return await this.project.update({
             where: {
                 slug: slug,
+            },
+            data: {
+                isDeleted: true,
             },
             select: {
                 slug: true,
                 isDeleted: true,
+                updatedAt: true,
+            },
+        });
+    }
+
+    async DeleteUser(email: string) {
+        return await this.user.update({
+            where: {
+                email: email,
+            },
+            data: {
+                isDeleted: true,
+            },
+            select: {
+                email: true,
+                isDeleted: true,
+                updatedAt: true,
+            },
+        });
+    }
+
+    async UpdateProject(
+        slug: string,
+        projectSlug: string,
+        projectName: string,
+        projectDesc: string,
+    ) {
+        return await this.project.update({
+            where: {
+                slug: slug,
+            },
+            data: {
+                slug: projectSlug,
+                projectName: projectName,
+                projectDesc: projectDesc,
+            },
+            select: {
+                slug: true,
+                updatedAt: true,
+            },
+        });
+    }
+
+    async UpdateProjectData(
+        targetId: string,
+        title: string,
+        description: string,
+        url: string,
+    ) {
+        return await this.projectData.update({
+            where: {
+                id: targetId,
+            },
+            data: {
+                title: title,
+                description: description,
+                url: url,
+            },
+            select: {
+                id: true,
                 updatedAt: true,
             },
         });
@@ -198,6 +264,27 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         if (!res) {
             throw new HttpException(
                 `Prisma Error from AddProjectData`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return res;
+    }
+
+    async DeleteProjectData(slug: string, id: string) {
+        const res = await this.projectData.delete({
+            where: {
+                id: id,
+                // projectId: slug,
+            },
+            select: {
+                id: true,
+            },
+        });
+
+        if (!res) {
+            throw new HttpException(
+                `Prisma Error from DeleteProjectData`,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
