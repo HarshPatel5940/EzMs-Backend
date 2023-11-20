@@ -5,9 +5,11 @@ import {
     HttpStatus,
     Param,
     StreamableFile,
+    UseGuards,
 } from "@nestjs/common";
 import axios from "axios";
 import { PublicRoute } from "../../shared/guards/auth.decorator";
+import { PublicImageGuard } from "../../shared/guards/public.guard";
 import { ProjectService } from "../project/project.service";
 
 @Controller("public/project")
@@ -16,7 +18,7 @@ export class PublicController {
 
     @Get("/:slug/data/:title")
     @PublicRoute()
-    // @UseGuards(PublicImageGuard)
+    @UseGuards(PublicImageGuard)
     async GetProjectData(
         @Param("slug") slug: string,
         @Param("title") title: string,
