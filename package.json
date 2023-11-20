@@ -1,6 +1,6 @@
 {
   "name": "learning-nestjs",
-  "version": "0.0.3",
+  "version": "1.0",
   "description": "A Repo for learning nestjs and making a sample nestjs API.",
   "author": "HarshPatel5940",
   "private": true,
@@ -8,8 +8,8 @@
   "scripts": {
     "devdb:up": "docker compose up dev-db -d",
     "devdb:rm": "docker compose rm dev-db -s -f -v",
-    "devdb:deploy": "prisma migrate deploy && prisma db push && prisma generate",
-    "devdb:restart": "pnpm devdb:rm && pnpm devdb:up && sleep 1.5 && pnpm devdb:deploy && echo \"\nDatabase Redeployed.\n\"",
+    "devdb:deploy": "pnpm prisma generate && pnpm prisma migrate dev && pnpm prisma db push && echo \"\nDatabase Deployed.\n\"",
+    "devdb:reset": "pnpm devdb:rm && pnpm devdb:up && sleep 1.5 && pnpm devdb:deploy && echo \"\nDatabase Resetted.\n\"",
     "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",

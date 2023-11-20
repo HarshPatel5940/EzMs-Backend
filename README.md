@@ -1,34 +1,35 @@
 <div align="center">
-<h1> EzMs </h1>
-<p> Versatile CMS API Crafted with NestJS and TypeScript </p>
+<h1> EzMs Backend</h1>
+<p> A Simple, versatile and Robust CMS API made using NestJs, Prisma and Supabase! </p>
 <p>
-  <a href="https://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <a href="https://nestjs.com/" target="blank"><img src="https://repository-images.githubusercontent.com/654061696/0dac8f4c-53e9-4ca9-823e-df9afd606b4d" alt="EzMs Banner" /></a>
 </p>
 
 </div>
 
-## Description
-
-> This repository contains a powerful CMS API developed using NestJS and TypeScript. Need to add detailed description of
-> the project.
-
 ## Installation
 
+1. Install the dependencies
+
 ```bash
-$ yarn install
+pnpm i
 ```
 
-## Running the app
+2. Make sure to
+    - Create a .env file in the root directory
+    - Run `pnpm devdb:reset` so it runs all the dev migrations and push it to the database
+    - Check the `package.json` file for more scripts, so you can use docker and other stuff
+
+To Start Development Server
 
 ```bash
-# development
-$ yarn run start
+pnpm run dev
+```
 
-# watch mode
-$ yarn run start:dev
+To Start Production Server
 
-# production mode
-$ yarn run start:prod
+```bash
+pnpm run start
 ```
 
 ## License
