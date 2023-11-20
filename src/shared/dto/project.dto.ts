@@ -21,6 +21,5 @@ export const projectDataSchema = z.object({
 });
 
 export type projectCreateDto = z.infer<typeof projectCreateSchema>;
-export type projectDto = z.infer<typeof projectSchema>;
 export type projectAccessDto = z.infer<typeof projectAccessSchema>;
 export type ProjectDataDto = z.infer<typeof projectDataSchema>;
