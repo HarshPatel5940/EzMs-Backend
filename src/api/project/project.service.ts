@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Express } from "express";
 import { PrismaService } from "src/api/database/prisma.service";
 import {
@@ -34,6 +34,36 @@ export class ProjectService {
             return false;
         }
         return PROJECT;
+    }
+
+    async GetProjectData(slug: string, title: string) {
+        const res = await this.prisma.project.findUnique({
+            where: {
+                slug: slug,
+            },
+            select: {
+                projectData: true,
+            },
+        });
+
+        if (!res) {
+            throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
+        }
+
+        const targetRes = res.projectData.find((data) => {
+            if (data.projectId === slug && data.title === title) {
+                return data;
+            }
+        });
+
+        if (!targetRes) {
+            throw new HttpException(
+                "Project Data Not Found",
+                HttpStatus.NOT_FOUND,
+            );
+        }
+
+        return targetRes.id;
     }
 
     async GetAllProjects() {
@@ -72,6 +102,11 @@ export class ProjectService {
         const { projectName, projectDesc } = dto;
         const projectSlug = await this.prisma.Slugify(projectName);
         const res = await this.GetProject(projectSlug);
+        const res1 = await this.GetProject(slug);
+
+        if (!res1) {
+            throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
+        }
 
         if (res) {
             throw new HttpException(
@@ -88,11 +123,20 @@ export class ProjectService {
         );
     }
 
-    async UpdateProjectData(slug: string, dto: ProjectDataDto) {
+    async UpdateProjectData(slug: string, id: string, dto: ProjectDataDto) {
         const { title, description, url } = dto;
 
+        const targetRes = await this.GetProjectData(slug, id);
+
+        if (!targetRes) {
+            throw new HttpException(
+                "Project Data Not Found",
+                HttpStatus.NOT_FOUND,
+            );
+        }
+
         return await this.prisma.UpdateProjectData(
-            slug,
+            targetRes,
             title,
             description || "No Description Provided",
             url || "No Url Provided",
@@ -109,6 +153,16 @@ export class ProjectService {
         return await this.prisma.DeleteProject(Slug);
     }
 
+    async DeleteProjectData(Slug: string, id: string) {
+        const PROJECT = await this.GetProject(Slug);
+
+        if (!PROJECT) {
+            throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
+        }
+
+        return await this.prisma.DeleteProjectData(Slug, id);
+    }
+
     async UpdateProjectAccess(Slug: string, dto: projectAccessDto) {
         const PROJECT = await this.GetProject(Slug);
         if (!PROJECT) {
@@ -123,16 +177,15 @@ export class ProjectService {
         dto: ProjectDataDto,
         file: Express.Multer.File,
     ) {
-        try {
-            const link = await this.supabase.uploadFile(file);
-            await this.prisma.AddProjectData(slug, dto, link);
-            return { ...dto, ImageUrl: link };
-        } catch (error) {
-            Logger.debug(error);
+        const link = await this.supabase.uploadFile(file);
+        const res = await this.GetProjectData(slug, dto.title);
+        if (res) {
             throw new HttpException(
-                "Something Went Wrong",
-                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Project Data Already Exists",
+                HttpStatus.CONFLICT,
             );
         }
+        await this.prisma.AddProjectData(slug, dto, link);
+        return { ...dto, ImageUrl: link };
     }
 }

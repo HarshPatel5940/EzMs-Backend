@@ -49,7 +49,7 @@ model Project {
 model ProjectData {
   id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   projectId String
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [slug])
 
   title       String
   description String?

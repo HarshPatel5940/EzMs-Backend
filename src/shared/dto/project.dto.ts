@@ -16,7 +16,7 @@ export const projectAccessSchema = z.object({
 
 export const projectDataSchema = z.object({
     title: z.string(),
-    description: z.string().optional(),
+    description: z.string().optional().default(""),
     url: z.string().url().optional(),
 });
 

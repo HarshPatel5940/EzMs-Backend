@@ -170,14 +170,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     }
 
     async UpdateProjectData(
-        slug: string,
+        targetId: string,
         title: string,
         description: string,
         url: string,
     ) {
         return await this.projectData.update({
             where: {
-                id: slug,
+                id: targetId,
             },
             data: {
                 title: title,
@@ -264,6 +264,27 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         if (!res) {
             throw new HttpException(
                 `Prisma Error from AddProjectData`,
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return res;
+    }
+
+    async DeleteProjectData(slug: string, id: string) {
+        const res = await this.projectData.delete({
+            where: {
+                id: id,
+                // projectId: slug,
+            },
+            select: {
+                id: true,
+            },
+        });
+
+        if (!res) {
+            throw new HttpException(
+                `Prisma Error from DeleteProjectData`,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }

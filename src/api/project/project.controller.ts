@@ -24,7 +24,6 @@ import {
     projectCreateDto,
     projectCreateSchema,
     ProjectDataDto,
-    projectDataSchema,
 } from "../../shared/dto";
 import {
     AuthRole,
@@ -82,8 +81,7 @@ export class ProjectController {
     @Post("/:slug/data/new")
     @PublicRoute()
     @UseInterceptors(FileInterceptor("image"))
-    // TODO: Fix this pipe cause it will be receiving stuff in the form of multipart body form
-    // @UsePipes(new ZodValidationPipe(projectDataSchema))
+    // @UsePipes(new ZodValidationPipe(projectDataSchema)) TODO
     CreateProjectData(
         @Body() dto: ProjectDataDto,
         @Param("slug") slug: string,
@@ -110,7 +108,7 @@ export class ProjectController {
 
     @AuthRole(Roles.Admin)
     @Patch("/:slug")
-    @UsePipes(new ZodValidationPipe(projectCreateSchema))
+    // @UsePipes(new ZodValidationPipe(projectCreateSchema)) TODO
     UpdateProject(@Param("slug") slug: string, @Body() dto: projectCreateDto) {
         try {
             return this.projectService.UpdateProject(slug, dto);
@@ -124,13 +122,14 @@ export class ProjectController {
 
     @AuthRole(Roles.Verified)
     @Patch("/:slug/data/:id")
-    @UsePipes(new ZodValidationPipe(projectDataSchema))
+    // @UsePipes(new ZodValidationPipe(projectDataSchema)) TODO
     UpdateProjectData(
         @Param("slug") slug: string,
+        @Param("id") id: string,
         @Body() dto: ProjectDataDto,
     ) {
         try {
-            return this.projectService.UpdateProjectData(slug, dto);
+            return this.projectService.UpdateProjectData(slug, id, dto);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",
@@ -139,7 +138,18 @@ export class ProjectController {
         }
     }
 
-    // TODO: DeleteProjectData()
+    @AuthRole(Roles.Verified)
+    @Delete("/:slug/data/:id")
+    DeleteProjectData(@Param("slug") slug: string, @Param("id") id: string) {
+        try {
+            return this.projectService.DeleteProjectData(slug, id);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
 
     @AuthRole(Roles.Admin)
     @Delete("/:slug")

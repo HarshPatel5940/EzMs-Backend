@@ -13,7 +13,10 @@ export class ZodValidationPipe implements PipeTransform {
             this.schema.parse(value);
         } catch (error) {
             throw new HttpException(
-                { error: "Malformed Body", message: error },
+                {
+                    error: "Malformed Body",
+                    message: error,
+                },
                 HttpStatus.BAD_REQUEST,
             );
         }
