@@ -97,7 +97,7 @@ export class ProjectController {
         file: Express.Multer.File,
     ) {
         try {
-            return this.projectService.AddProjectData(slug, dto, file);
+            return this.projectService.CreateProjectData(slug, dto, file);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",
@@ -173,6 +173,19 @@ export class ProjectController {
     ) {
         try {
             return this.projectService.UpdateProjectAccess(slug, dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Post("/:slug/token")
+    @AuthRole(Roles.Admin)
+    async RegenerateToken(@Param("slug") slug: string) {
+        try {
+            return await this.projectService.RegenerateToken(slug);
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",

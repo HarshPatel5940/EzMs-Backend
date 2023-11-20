@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Express } from "express";
 import { PrismaService } from "src/api/database/prisma.service";
 import {
@@ -6,6 +6,7 @@ import {
     projectCreateDto,
     ProjectDataDto,
 } from "../../shared/dto";
+import { PasswordService } from "../auth/pwd.service";
 import { SupabaseService } from "../database/supabase.service";
 
 @Injectable()
@@ -13,6 +14,7 @@ export class ProjectService {
     constructor(
         private readonly prisma: PrismaService,
         private readonly supabase: SupabaseService,
+        private readonly pwd: PasswordService,
     ) {}
 
     async GetProject(Slug: string) {
@@ -57,13 +59,10 @@ export class ProjectService {
         });
 
         if (!targetRes) {
-            throw new HttpException(
-                "Project Data Not Found",
-                HttpStatus.NOT_FOUND,
-            );
+            return false;
         }
 
-        return targetRes.id;
+        return targetRes;
     }
 
     async GetAllProjects() {
@@ -90,11 +89,14 @@ export class ProjectService {
                 HttpStatus.CONFLICT,
             );
         }
+        const token = await this.pwd.generateToken(projectSlug);
+        Logger.debug(token, "PasswordService");
 
         return await this.prisma.CreateProject(
             projectSlug,
             projectName,
             projectDesc,
+            token,
         );
     }
 
@@ -114,21 +116,33 @@ export class ProjectService {
                 HttpStatus.CONFLICT,
             );
         }
-
+        const newToken = await this.pwd.generateToken(projectSlug);
         return await this.prisma.UpdateProject(
             slug,
             projectSlug,
             projectName,
             projectDesc,
+            newToken,
         );
     }
 
-    async UpdateProjectData(slug: string, id: string, dto: ProjectDataDto) {
+    async UpdateProjectData(
+        slug: string,
+        old_title: string,
+        dto: ProjectDataDto,
+    ) {
         const { title, description, url } = dto;
 
-        const targetRes = await this.GetProjectData(slug, id);
+        const res = await this.GetProjectData(slug, old_title);
+        if (!res) {
+            throw new HttpException(
+                "Project Data Not Found",
+                HttpStatus.NOT_FOUND,
+            );
+        }
+        const id = res.id;
 
-        if (!targetRes) {
+        if (!id) {
             throw new HttpException(
                 "Project Data Not Found",
                 HttpStatus.NOT_FOUND,
@@ -136,7 +150,7 @@ export class ProjectService {
         }
 
         return await this.prisma.UpdateProjectData(
-            targetRes,
+            id,
             title,
             description || "No Description Provided",
             url || "No Url Provided",
@@ -172,7 +186,7 @@ export class ProjectService {
         return await this.prisma.UpdateProjectAccess(dto, Slug);
     }
 
-    async AddProjectData(
+    async CreateProjectData(
         slug: string,
         dto: ProjectDataDto,
         file: Express.Multer.File,
@@ -187,5 +201,14 @@ export class ProjectService {
         }
         await this.prisma.AddProjectData(slug, dto, link);
         return { ...dto, ImageUrl: link };
+    }
+
+    async RegenerateToken(slug: string) {
+        const PROJECT = await this.GetProject(slug);
+        if (!PROJECT) {
+            throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
+        }
+        const newToken = await this.pwd.generateToken(slug);
+        return await this.prisma.RegenerateProjectToken(slug, newToken);
     }
 }
