@@ -101,12 +101,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         projectSlug: string,
         projectName: string,
         projectDesc: string,
+        projectToken: string,
     ) {
         return await this.project.create({
             data: {
                 slug: projectSlug,
                 projectName: projectName,
                 projectDesc: projectDesc,
+                projectToken: projectToken,
             },
             select: {
                 slug: true,
@@ -152,6 +154,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         projectSlug: string,
         projectName: string,
         projectDesc: string,
+        newToken: string,
     ) {
         return await this.project.update({
             where: {
@@ -161,6 +164,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 slug: projectSlug,
                 projectName: projectName,
                 projectDesc: projectDesc,
+                projectToken: newToken,
             },
             select: {
                 slug: true,
@@ -290,5 +294,20 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         }
 
         return res;
+    }
+
+    async RegenerateProjectToken(slug: string, token: string) {
+        return await this.project.update({
+            where: {
+                slug: slug,
+            },
+            data: {
+                projectToken: token,
+            },
+            select: {
+                projectToken: true,
+                updatedAt: true,
+            },
+        });
     }
 }

@@ -4,6 +4,7 @@ import { AuthModule } from "./api/auth/auth.module";
 import { DatabaseModule } from "./api/database/db.module";
 import { HealthModule } from "./api/health/health.module";
 import { ProjectModule } from "./api/project/project.module";
+import { PublicModule } from "./api/public/public.module";
 import { HttpLoggerMiddleware } from "./shared/middlewares/logger";
 
 @Module({
@@ -13,6 +14,7 @@ import { HttpLoggerMiddleware } from "./shared/middlewares/logger";
         ProjectModule,
         HealthModule,
         DatabaseModule,
+        PublicModule,
     ],
 })
 export class AppModule implements NestModule {
