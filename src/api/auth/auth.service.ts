@@ -1,16 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
 import * as argon from "argon2";
 import { PrismaService } from "src/api/database/prisma.service";
 import { AuthDto } from "../../shared/dto";
+import { PasswordService } from "./pwd.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly prisma: PrismaService,
-        private readonly jwt: JwtService,
-        private readonly config: ConfigService,
+        private readonly pwd: PasswordService,
     ) {}
 
     async signup(dto: AuthDto): Promise<{
@@ -60,26 +58,6 @@ export class AuthService {
             );
         }
 
-        return this.signToken(USER.email, USER.role);
-    }
-
-    async signToken(email: string, role: string) {
-        const PAYLOAD = {
-            email,
-            role,
-        };
-
-        const JWT_SECRET = this.config.get("JWT_SECRET");
-        const JWT_ISSUER = this.config.get("JWT_ISSUER");
-        const TOKEN = await this.jwt.signAsync(PAYLOAD, {
-            expiresIn: "1h",
-            secret: JWT_SECRET || "HelloWorld",
-            issuer: JWT_ISSUER || "HelloWorld",
-        });
-
-        return {
-            accessToken: TOKEN,
-            createdAt: new Date(),
-        };
+        return this.pwd.signToken(USER.email, USER.role);
     }
 }
