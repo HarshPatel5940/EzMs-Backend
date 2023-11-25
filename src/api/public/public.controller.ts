@@ -38,7 +38,6 @@ export class PublicController {
                 HttpStatus.NOT_FOUND,
             );
         }
-        console.log(imageUrl);
 
         const stream = await axios.get(imageUrl, {
             responseType: "stream",
