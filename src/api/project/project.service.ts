@@ -25,6 +25,8 @@ export class ProjectService {
             select: {
                 slug: true,
                 projectName: true,
+                projectDesc: true,
+                projectToken: true,
                 projectData: true,
                 users: true,
                 createdAt: true,

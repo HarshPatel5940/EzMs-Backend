@@ -1,4 +1,6 @@
+import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
 import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { APP_INTERCEPTOR } from "@nestjs/core";
 import { AdminModule } from "./api/admin/admin.module";
 import { AuthModule } from "./api/auth/auth.module";
 import { DatabaseModule } from "./api/database/db.module";
@@ -15,6 +17,13 @@ import { HttpLoggerMiddleware } from "./shared/middlewares/logger";
         HealthModule,
         DatabaseModule,
         PublicModule,
+        CacheModule.register({ ttl: 5 * 1000 }),
+    ],
+    providers: [
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: CacheInterceptor,
+        },
     ],
 })
 export class AppModule implements NestModule {

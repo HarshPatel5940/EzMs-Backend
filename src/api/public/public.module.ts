@@ -1,3 +1,4 @@
+import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
@@ -7,6 +8,7 @@ import { PublicController } from "./public.controller";
 import { PublicService } from "./public.service";
 
 @Module({
+    imports: [CacheModule.register()],
     controllers: [PublicController],
     providers: [
         PublicService,
