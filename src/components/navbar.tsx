@@ -13,7 +13,8 @@ export default function Navbar({ text, showLoginButton }: NavbarProps) {
     <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 max-h-16 sticky z-10">
       <div>
         <a href="/" className="flex space-x-4">
-          <img src="./vite.svg" className="h-8 w-8 text-gray-800 dark:text-white" />
+          <img src="./vite.svg" className="h-8 w-8 text-gray-800 dark:text-white" alt="" /> // TODO: Make a own logo and
+          then replace this
           <span className="text-xl">{text}</span> {/* Display the user inputted text near the logo */}
         </a>
       </div>
