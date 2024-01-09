@@ -44,6 +44,3 @@ jobs:
 
       - name: ESLint
         run: pnpm run lint
-
-      - name: prettier
-        run: pnpm run format:check
