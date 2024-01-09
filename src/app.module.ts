@@ -21,21 +21,21 @@ import { ThrottlerModule } from "@nestjs/throttler";
         CacheModule.register({ ttl: 5 * 1000 }),
         ThrottlerModule.forRoot([
             {
-              name: 'short',
-              ttl: 1000,
-              limit: 3,
+                name: "short",
+                ttl: 1000,
+                limit: 3,
             },
             {
-              name: 'medium',
-              ttl: 10000,
-              limit: 20
+                name: "medium",
+                ttl: 10000,
+                limit: 20,
             },
             {
-              name: 'long',
-              ttl: 60000,
-              limit: 100
-            }
-          ]),
+                name: "long",
+                ttl: 60000,
+                limit: 100,
+            },
+        ]),
     ],
     providers: [
         {
