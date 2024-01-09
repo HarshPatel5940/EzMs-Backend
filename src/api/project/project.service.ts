@@ -28,7 +28,11 @@ export class ProjectService {
                 projectDesc: true,
                 projectToken: true,
                 projectData: true,
-                users: true,
+                users: {
+                    select: {
+                        email: true,
+                    },
+                },
                 createdAt: true,
                 updatedAt: true,
             },
