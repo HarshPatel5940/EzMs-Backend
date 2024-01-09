@@ -11,6 +11,7 @@ import * as argon from "argon2";
 import { config } from "dotenv";
 import slugify from "slugify";
 import { AuthDto, projectAccessDto, ProjectDataDto } from "../../shared/dto";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 config();
 
@@ -27,7 +28,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         }
         Logger.debug("DATABASE_URL Found", "PrismaLoader");
 
-        if (!url.startsWith("postgres://")) {
+        if (
+            !url.startsWith("postgres://") &&
+            !url.startsWith("postgresql://")
+        ) {
             Logger.error("DATABASE_URL is Not Valid", "PrismaLoader");
             Logger.debug(url, "PRISMA");
             throw Error("[CONFIG] DATABASE_URL Not Valid ");
@@ -197,27 +201,41 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
     async UpdateProjectAccess(dto: projectAccessDto, slug: string) {
         const { AddAccess, RemoveAccess } = dto;
-
-        const { updatedAt } = await this.project.update({
-            where: {
-                slug: slug,
-            },
-            data: {
-                users: {
-                    connect: AddAccess.map((email) => ({
-                        email: email,
-                    })),
-                    disconnect: RemoveAccess.map((email) => ({
-                        email: email,
-                    })),
+        try {
+            const { updatedAt } = await this.project.update({
+                where: {
+                    slug: slug,
                 },
-            },
-            select: {
-                updatedAt: true,
-            },
-        });
-
-        return { data: dto, updatedAt: updatedAt };
+                data: {
+                    users: {
+                        connect: AddAccess.map((email) => ({
+                            email: email,
+                        })),
+                        disconnect: RemoveAccess.map((email) => ({
+                            email: email,
+                        })),
+                    },
+                },
+                select: {
+                    updatedAt: true,
+                },
+            });
+            return { data: dto, updatedAt: updatedAt };
+        } catch (error) {
+            if (
+                error instanceof PrismaClientKnownRequestError &&
+                error.code === "P2025"
+            ) {
+                throw new HttpException(
+                    "Some of the User Does not exsist!",
+                    HttpStatus.BAD_REQUEST,
+                );
+            }
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
     }
 
     async CreateUser(dto: AuthDto): Promise<{

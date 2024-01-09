@@ -39,12 +39,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: prisma
-        run: pnpx prisma generate
-        continue-on-error: true
-
       - name: Install dependencies
         run: pnpm install
+
+      - name: prisma
+        run: pnpm dlx prisma generate
+        continue-on-error: true
 
       - name: Build
         run: pnpm run build

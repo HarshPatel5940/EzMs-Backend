@@ -44,4 +44,3 @@ jobs:
 
       - name: ESLint
         run: pnpm run lint
-
