@@ -8,6 +8,7 @@ import { HealthModule } from "./api/health/health.module";
 import { ProjectModule } from "./api/project/project.module";
 import { PublicModule } from "./api/public/public.module";
 import { HttpLoggerMiddleware } from "./shared/middlewares/logger";
+import { ThrottlerModule } from "@nestjs/throttler";
 
 @Module({
     imports: [
@@ -18,6 +19,23 @@ import { HttpLoggerMiddleware } from "./shared/middlewares/logger";
         DatabaseModule,
         PublicModule,
         CacheModule.register({ ttl: 5 * 1000 }),
+        ThrottlerModule.forRoot([
+            {
+              name: 'short',
+              ttl: 1000,
+              limit: 3,
+            },
+            {
+              name: 'medium',
+              ttl: 10000,
+              limit: 20
+            },
+            {
+              name: 'long',
+              ttl: 60000,
+              limit: 100
+            }
+          ]),
     ],
     providers: [
         {
