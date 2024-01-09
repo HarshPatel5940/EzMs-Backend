@@ -27,7 +27,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         }
         Logger.debug("DATABASE_URL Found", "PrismaLoader");
 
-        if (!url.startsWith("postgres://")) {
+        if (!url.startsWith("postgres://") && !url.startsWith("postgresql://")) {
             Logger.error("DATABASE_URL is Not Valid", "PrismaLoader");
             Logger.debug(url, "PRISMA");
             throw Error("[CONFIG] DATABASE_URL Not Valid ");
