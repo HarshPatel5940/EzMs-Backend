@@ -166,7 +166,7 @@ export class ProjectController {
 
     @AuthRole(Roles.Admin)
     @Patch("/:slug/access")
-    @UsePipes(new ZodValidationPipe(projectAccessSchema))
+    // @UsePipes(new ZodValidationPipe(projectAccessSchema)) TODO
     UpdateProjectAccess(
         @Body() dto: projectAccessDto,
         @Param("slug") slug: string,
