@@ -222,12 +222,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
             });
             return { data: dto, updatedAt: updatedAt };
         } catch (error) {
-            if (error instanceof PrismaClientKnownRequestError && error.code === "P2025") { 
+            if (
+                error instanceof PrismaClientKnownRequestError &&
+                error.code === "P2025"
+            ) {
                 throw new HttpException(
                     "Some of the User Does not exsist!",
                     HttpStatus.BAD_REQUEST,
                 );
-                
             }
             throw new HttpException(
                 "Something Went Wrong",
