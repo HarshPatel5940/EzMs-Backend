@@ -33,10 +33,12 @@ export class SupabaseService implements OnModuleInit {
         const storageClient = createClient(this.supabaseUrl, this.supabaseKey, {
             db: { schema: "storage" },
         });
-                
+
         const { data, error } = await storageClient
             .from("buckets")
-            .select().filter("name", "eq", this.SupabaseBucket).single();
+            .select()
+            .filter("name", "eq", this.SupabaseBucket)
+            .single();
 
         if (error && !data) {
             Logger.error(error, "Supabase");
