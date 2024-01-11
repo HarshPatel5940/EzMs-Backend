@@ -37,7 +37,7 @@ export class SupabaseService implements OnModuleInit {
         const { data, error } = await storageClient
             .from("buckets")
             .select()
-            .filter("name", "eq", this.SupabaseBucket)
+            .match({ name: this.SupabaseBucket })
             .single();
 
         if (error && !data) {
