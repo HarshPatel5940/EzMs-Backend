@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Express } from "express";
-import { PrismaService } from "src/api/database/prisma.service";
+import { PrismaService } from "../database/prisma.service";
 import {
     projectAccessDto,
     projectCreateDto,

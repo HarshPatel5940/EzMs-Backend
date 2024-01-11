@@ -5,7 +5,7 @@ import {
     UnauthorizedException,
 } from "@nestjs/common";
 import { Request } from "express";
-import { PrismaService } from "src/api/database/prisma.service";
+import { PrismaService } from "../../api/database/prisma.service";
 
 @Injectable()
 export class PublicImageGuard implements CanActivate {

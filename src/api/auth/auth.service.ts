@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import * as argon from "argon2";
-import { PrismaService } from "src/api/database/prisma.service";
+import { PrismaService } from "../database/prisma.service";
 import { AuthDto } from "../../shared/dto";
 import { PasswordService } from "./pwd.service";
 

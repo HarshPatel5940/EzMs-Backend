@@ -8,7 +8,7 @@ import {
     Post,
     UsePipes,
 } from "@nestjs/common";
-import { AuthRole, Roles } from "src/shared/guards/auth.decorator";
+import { AuthRole, Roles } from "../../shared/guards/auth.decorator";
 import { userEmailDto, userEmailSchema } from "../../shared/dto";
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 import { AdminService } from "./admin.service";
