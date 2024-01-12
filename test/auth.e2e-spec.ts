@@ -2,15 +2,20 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "../src/app.module";
+import {
+    email,
+    password,
+    badPwd,
+    name,
+    testAdminEmail,
+    testAdminPassword,
+} from "./constants";
 
 describe("AuthController (e2e)", () => {
     let app: INestApplication;
-    const name: string = `test-${crypto.randomUUID().replace("-", "")}`;
-    const email: string = `${name}@gmail.com`;
-    const password: string = "HelloWorld";
-    const badPwd: string = "hmm";
+    let accessToken: string;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
@@ -113,8 +118,28 @@ describe("AuthController (e2e)", () => {
             .expect(200);
     });
 
+    it("/auth/signin (POST)", () => {
+        return request(app.getHttpServer())
+            .post("/api/auth/signin")
+            .send({
+                email: testAdminEmail,
+                password: testAdminPassword,
+            })
+            .expect(200)
+            .then((response) => {
+                accessToken = response.body.accessToken;
+            });
+    });
+
+    it("/admin/delete/test-users (POST)", () => {
+        console.log(accessToken);
+        return request(app.getHttpServer())
+            .delete("/api/admin/delete/test-users")
+            .set("Authorization", `Bearer ${accessToken}`)
+            .expect(200);
+    });
+
     afterAll(async () => {
         await app.close();
-        // TODO: Delete Test User from Supabase
     });
 });
