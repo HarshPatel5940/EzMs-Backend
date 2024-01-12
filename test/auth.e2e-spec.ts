@@ -2,14 +2,13 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
 import { AppModule } from "../src/app.module";
-import { createClient } from "@supabase/supabase-js";
 
 describe("AuthController (e2e)", () => {
     let app: INestApplication;
-    let name: string = `test-${crypto.randomUUID().replace("-", "")}`;
-    let email: string = `${name}@gmail.com`;
-    let password: string = "HelloWorld";
-    let badPwd: string = "hmm";
+    const name: string = `test-${crypto.randomUUID().replace("-", "")}`;
+    const email: string = `${name}@gmail.com`;
+    const password: string = "HelloWorld";
+    const badPwd: string = "hmm";
 
     beforeEach(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
