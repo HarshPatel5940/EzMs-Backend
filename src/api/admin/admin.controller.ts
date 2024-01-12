@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     HttpCode,
     HttpException,
     HttpStatus,
@@ -33,6 +34,7 @@ export class AdminController {
     }
 
     @Post("/new/user")
+    @HttpCode(HttpStatus.CREATED)
     @AuthRole(Roles.Admin)
     @UsePipes(new ZodValidationPipe(userEmailSchema))
     CreateUser(@Body() dto: userEmailDto) {
@@ -52,6 +54,19 @@ export class AdminController {
     DeleteUser(@Body() dto: userEmailDto) {
         try {
             return this.adminService.DeleteUser(dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Delete("/delete/test-users")
+    @AuthRole(Roles.Admin)
+    DeleteTestUsers() {
+        try {
+            return this.adminService.DeleteTestUsers();
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",

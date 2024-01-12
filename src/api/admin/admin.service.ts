@@ -71,7 +71,7 @@ export class AdminService {
         });
 
         if (!USER) {
-            throw new HttpException(`User doesn't exist`, HttpStatus.CONFLICT);
+            throw new HttpException(`User doesn't exist`, HttpStatus.NOT_FOUND);
         }
 
         const deleteUserRes = await this.prisma.DeleteUser(dto.email);
@@ -85,6 +85,24 @@ export class AdminService {
 
         return {
             message: "User Deleted Successfully",
+            data: deleteUserRes,
+        };
+    }
+
+    async DeleteTestUsers() {
+        const deleteUserRes = await this.prisma.user.deleteMany({
+            where: { name: { startsWith: "test-" } },
+        });
+
+        if (!deleteUserRes) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return {
+            message: "Test Users Deleted Successfully",
             data: deleteUserRes,
         };
     }
