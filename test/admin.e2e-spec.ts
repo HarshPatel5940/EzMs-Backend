@@ -50,14 +50,17 @@ describe("AdminController (e2e)", () => {
     });
 
     it("/admin/verify/user (PATCH)", () => {
-        return request(app.getHttpServer())
-            .patch("/api/admin/verify/user")
-            .set("Authorization", `Bearer ${accessToken}`)
-            .send({
-                email: email2,
-                name: name2,
-            })
-            .expect(200);
+        return (
+            request(app.getHttpServer())
+                .patch("/api/admin/verify/user")
+                .set("Authorization", `Bearer ${accessToken}`)
+                .send({
+                    email: email2,
+                    name: name2,
+                })
+                // sometimes it fails
+                .expect(200)
+        );
     });
 
     it("/admin/delete/test-users (POST)", () => {

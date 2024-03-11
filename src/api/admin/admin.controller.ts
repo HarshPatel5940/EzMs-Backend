@@ -74,4 +74,17 @@ export class AdminController {
             );
         }
     }
+
+    @Delete("/delete/test-projects")
+    @AuthRole(Roles.Admin)
+    DeleteTestProjects() {
+        try {
+            return this.adminService.DeleteTestProjects();
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
 }

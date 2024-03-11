@@ -122,7 +122,8 @@ export class ProjectController {
 
     @AuthRole(Roles.Verified)
     @Patch("/:slug/data/:id")
-    // @UsePipes(new ZodValidationPipe(projectDataSchema)) TODO
+    // todo: Pipes don't work when u infer from both params and body
+    // @UsePipes(new ZodValidationPipe(projectDataSchema))
     UpdateProjectData(
         @Param("slug") slug: string,
         @Param("id") id: string,

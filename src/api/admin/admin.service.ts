@@ -106,4 +106,33 @@ export class AdminService {
             data: deleteUserRes,
         };
     }
+
+    async DeleteTestProjects() {
+        const deleteProjectRes = await this.prisma.project.deleteMany({
+            where: { slug: { startsWith: "test" } },
+        });
+
+        if (!deleteProjectRes) {
+            throw new HttpException(
+                "Not able to delete test projects",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        const deleteProjectDataRes = await this.prisma.projectData.deleteMany({
+            where: { projectId: { startsWith: "test" } },
+        });
+
+        if (!deleteProjectDataRes) {
+            throw new HttpException(
+                "Not able to delete test projects data",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return {
+            message: "Test Projects and Its Data Deleted Successfully",
+            data: deleteProjectRes,
+        };
+    }
 }
