@@ -15,7 +15,12 @@
 pnpm i
 ```
 
-2. Make sure to
+2. Generate Schema Types
+```
+pnpm dlx prisma generate
+```
+
+3. Make sure to
     - Create a .env file in the root directory
     - Run `pnpm devdb:reset` so it runs all the dev migrations and push it to the database
     - Check the `package.json` file for more scripts, so you can use docker and other stuff
