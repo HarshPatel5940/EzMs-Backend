@@ -25,6 +25,9 @@ pnpm dlx prisma generate
     - Run `pnpm devdb:reset` so it runs all the dev migrations and push it to the database
     - Check the `package.json` file for more scripts, so you can use docker and other stuff
 
+4. Explore the Endpoints in the [postman collection here](https://documenter.getpostman.com/view/24323329/2sA2xiXCKs)
+
+---
 To Start Development Server
 
 ```bash
