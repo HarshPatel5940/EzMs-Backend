@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import * as request from "supertest";
 import { AppModule } from "../src/app.module";
 import { INestApplication } from "@nestjs/common";
-import { email2, testAdminEmail, testAdminPassword } from "./constants";
+import { testAdminEmail, testAdminPassword } from "./constants";
 
 describe("AdminController (e2e)", () => {
     let app: INestApplication;
