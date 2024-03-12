@@ -230,11 +230,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                     "Some of the User Does not exsist!",
                     HttpStatus.BAD_REQUEST,
                 );
+            } else {
+                throw new HttpException(
+                    "Error while updating project access for users",
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                );
             }
-            throw new HttpException(
-                "Something Went Wrong",
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
         }
     }
 

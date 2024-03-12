@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { Express } from "express";
-import { PrismaService } from "src/api/database/prisma.service";
+import { PrismaService } from "../database/prisma.service";
 import {
     projectAccessDto,
     projectCreateDto,
@@ -189,7 +189,16 @@ export class ProjectService {
             throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
         }
 
-        return await this.prisma.UpdateProjectAccess(dto, Slug);
+        const res = await this.prisma.UpdateProjectAccess(dto, Slug);
+
+        if (!res) {
+            throw new HttpException(
+                "Error Updating Project Access",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return res;
     }
 
     async CreateProjectData(

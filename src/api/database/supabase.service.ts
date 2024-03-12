@@ -7,7 +7,6 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { Express } from "express";
 
 @Injectable()
 export class SupabaseService implements OnModuleInit {
@@ -38,9 +37,10 @@ export class SupabaseService implements OnModuleInit {
         const { data, error } = await storageClient
             .from("buckets")
             .select()
-            .eq("name", this.SupabaseBucket);
+            .match({ name: this.SupabaseBucket })
+            .single();
 
-        if (error || !data) {
+        if (error && !data) {
             Logger.error(error, "Supabase");
             throw new Error("Something Went Wrong While Fetching Bucket");
         }

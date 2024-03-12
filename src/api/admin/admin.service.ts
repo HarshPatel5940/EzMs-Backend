@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { PasswordService } from "src/api/auth/pwd.service";
-import { PrismaService } from "src/api/database/prisma.service";
+import { PasswordService } from "../../api/auth/pwd.service";
+import { PrismaService } from "../../api/database/prisma.service";
 import { userEmailDto } from "../../shared/dto";
 
 @Injectable()
@@ -71,7 +71,7 @@ export class AdminService {
         });
 
         if (!USER) {
-            throw new HttpException(`User doesn't exist`, HttpStatus.CONFLICT);
+            throw new HttpException(`User doesn't exist`, HttpStatus.NOT_FOUND);
         }
 
         const deleteUserRes = await this.prisma.DeleteUser(dto.email);
@@ -86,6 +86,53 @@ export class AdminService {
         return {
             message: "User Deleted Successfully",
             data: deleteUserRes,
+        };
+    }
+
+    async DeleteTestUsers() {
+        const deleteUserRes = await this.prisma.user.deleteMany({
+            where: { name: { startsWith: "test-" } },
+        });
+
+        if (!deleteUserRes) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return {
+            message: "Test Users Deleted Successfully",
+            data: deleteUserRes,
+        };
+    }
+
+    async DeleteTestProjects() {
+        const deleteProjectRes = await this.prisma.project.deleteMany({
+            where: { slug: { startsWith: "test" } },
+        });
+
+        if (!deleteProjectRes) {
+            throw new HttpException(
+                "Not able to delete test projects",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        const deleteProjectDataRes = await this.prisma.projectData.deleteMany({
+            where: { projectId: { startsWith: "test" } },
+        });
+
+        if (!deleteProjectDataRes) {
+            throw new HttpException(
+                "Not able to delete test projects data",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return {
+            message: "Test Projects and Its Data Deleted Successfully",
+            data: deleteProjectRes,
         };
     }
 }

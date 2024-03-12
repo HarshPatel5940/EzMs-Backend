@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     HttpCode,
     HttpException,
     HttpStatus,
@@ -8,7 +9,7 @@ import {
     Post,
     UsePipes,
 } from "@nestjs/common";
-import { AuthRole, Roles } from "src/shared/guards/auth.decorator";
+import { AuthRole, Roles } from "../../shared/guards/auth.decorator";
 import { userEmailDto, userEmailSchema } from "../../shared/dto";
 import { ZodValidationPipe } from "../../shared/pipes/zodPipe";
 import { AdminService } from "./admin.service";
@@ -33,6 +34,7 @@ export class AdminController {
     }
 
     @Post("/new/user")
+    @HttpCode(HttpStatus.CREATED)
     @AuthRole(Roles.Admin)
     @UsePipes(new ZodValidationPipe(userEmailSchema))
     CreateUser(@Body() dto: userEmailDto) {
@@ -52,6 +54,32 @@ export class AdminController {
     DeleteUser(@Body() dto: userEmailDto) {
         try {
             return this.adminService.DeleteUser(dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Delete("/delete/test-users")
+    @AuthRole(Roles.Admin)
+    DeleteTestUsers() {
+        try {
+            return this.adminService.DeleteTestUsers();
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
+    @Delete("/delete/test-projects")
+    @AuthRole(Roles.Admin)
+    DeleteTestProjects() {
+        try {
+            return this.adminService.DeleteTestProjects();
         } catch (error) {
             throw new HttpException(
                 "Something Went Wrong",
