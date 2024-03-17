@@ -8,6 +8,7 @@ import {
 } from "../../shared/dto";
 import { PasswordService } from "../auth/pwd.service";
 import { SupabaseService } from "../database/supabase.service";
+import { $Enums } from "@prisma/client";
 
 @Injectable()
 export class ProjectService {
@@ -75,12 +76,21 @@ export class ProjectService {
         const PROJECTS = await this.prisma.project.findMany({
             select: {
                 slug: true,
+                projectName: true,
+                projectDesc: true,
+                projectData: {
+                    select: {
+                        title: true,
+                    },
+                },
+                updatedAt: true,
             },
         });
 
         if (!PROJECTS) {
             return false;
         }
+
         return PROJECTS;
     }
 

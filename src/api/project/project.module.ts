@@ -12,7 +12,7 @@ import { ProjectService } from "./project.service";
     controllers: [ProjectController],
     providers: [
         ProjectService,
-        // ? The Below Are dependencies of the AuthGuard
+        // * The Below Are dependencies of the AuthGuard
         JwtService,
         ConfigService,
         PasswordService,
