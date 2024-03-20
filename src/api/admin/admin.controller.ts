@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     HttpCode,
     HttpException,
     HttpStatus,
@@ -17,6 +18,12 @@ import { AdminService } from "./admin.service";
 @Controller("admin")
 export class AdminController {
     constructor(private readonly adminService: AdminService) {}
+
+    @Get("/check")
+    @AuthRole(Roles.Admin)
+    CheckAdmin() {
+        return { message: "Admin Verified Successfully" };
+    }
 
     @Patch("/verify/user")
     @AuthRole(Roles.Admin)
