@@ -8,7 +8,6 @@ import {
 } from "../../shared/dto";
 import { PasswordService } from "../auth/pwd.service";
 import { SupabaseService } from "../database/supabase.service";
-import { $Enums } from "@prisma/client";
 
 @Injectable()
 export class ProjectService {

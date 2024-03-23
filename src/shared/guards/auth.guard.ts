@@ -4,7 +4,6 @@ import {
     HttpException,
     HttpStatus,
     Injectable,
-    UnauthorizedException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
