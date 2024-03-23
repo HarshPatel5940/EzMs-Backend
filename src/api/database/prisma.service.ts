@@ -86,6 +86,26 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         return res.role === role;
     }
 
+    async GetUserRole(email: string): Promise<Role> {
+        const res = await this.user.findUnique({
+            where: {
+                email: email,
+            },
+            select: {
+                role: true,
+            },
+        });
+
+        if (!res) {
+            throw new HttpException(
+                "Email does not exists",
+                HttpStatus.FORBIDDEN,
+            );
+        }
+
+        return res.role;
+    }
+
     async VerifyUser(email: string) {
         return await this.user.update({
             where: {

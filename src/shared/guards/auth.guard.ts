@@ -39,7 +39,10 @@ export class AuthGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
         if (!token) {
-            throw new UnauthorizedException();
+            throw new HttpException(
+                "Unauthorized access",
+                HttpStatus.UNAUTHORIZED,
+            );
         }
         const JWT_SECRET = this.config.get("JWT_SECRET");
         const JWT_ISSUER = this.config.get("JWT_ISSUER");
@@ -55,24 +58,30 @@ export class AuthGuard implements CanActivate {
             });
         }
 
-        if (payload.role === "admin") {
-            return await this.prisma.CompareUserRole(
-                payload.email,
-                payload.role,
+        const userRole = await this.prisma.GetUserRole(payload.email);
+
+        if (payload.role === "admin" && userRole === "admin") {
+            return true;
+        }
+
+        if (payload.role !== userRole) {
+            throw new HttpException(
+                "Token Expired. ReLogin to get a new token.",
+                HttpStatus.UNAUTHORIZED,
             );
         }
 
-        if (!RequiredRole.includes(payload.role)) {
+        if (!RequiredRole.includes(userRole)) {
             throw new HttpException(
                 "Unauthorized access",
-                HttpStatus.UNAUTHORIZED,
+                HttpStatus.FORBIDDEN,
                 {
                     cause: new Error("Unauthorized access"),
                 },
             );
         }
 
-        return await this.prisma.CompareUserRole(payload.email, payload.role);
+        return payload.role === userRole;
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {

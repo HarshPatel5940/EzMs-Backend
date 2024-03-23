@@ -21,7 +21,8 @@ export class AdminController {
 
     @Get("/check")
     @AuthRole(Roles.Admin)
-    CheckAdmin() {
+    @HttpCode(HttpStatus.OK)
+    checkAdmin() {
         return { message: "Admin Verified Successfully" };
     }
 
