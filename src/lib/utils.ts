@@ -6,8 +6,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'http://localhost:5050';
 
 export default axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
 });

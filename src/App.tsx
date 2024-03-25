@@ -1,12 +1,12 @@
 import './App.css';
 import { Outlet } from 'react-router-dom';
-import { Toaster } from './components/ui/toaster';
+import { Toaster } from './components/ui/sonner';
 
 function App() {
   return (
     <div>
       <Outlet />
-      <Toaster />
+      <Toaster closeButton position="top-right" />
     </div>
   );
 }

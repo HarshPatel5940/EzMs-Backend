@@ -8,6 +8,7 @@ import LoginPage from '@/pages/auth/loginPage.tsx';
 import SignupPage from '@/pages/auth/signupPage.tsx';
 import HomePage from './pages/rootPage.tsx';
 import NotFoundPage from './pages/notFoundPage.tsx';
+import DashboardPage from './pages/project/dashboardPage.tsx';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: 'signup',
         element: <SignupPage />,
+      },
+      {
+        path: 'dashboard',
+        element: <DashboardPage />,
       },
       {
         path: '*',

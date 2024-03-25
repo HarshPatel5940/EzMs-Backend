@@ -1,11 +1,11 @@
-import Navbar from '@/components/navbar';
+import MyNavbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
 export default function homePage() {
   return (
     <div>
-      <Navbar {...{ text: 'Home', showLoginButton: true }} />
+      <MyNavbar {...{ text: 'Home', showLoginButton: true }} />
       <main className="flex-grow z-0 -mt-16">
         <section className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900" id="hero">
           <div className="text-center space-y-2">

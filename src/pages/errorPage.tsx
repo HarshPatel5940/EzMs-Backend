@@ -1,9 +1,9 @@
-import Navbar from '@/components/navbar';
+import MyNavbar from '@/components/Navbar';
 
 export default function ErrorPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      <MyNavbar />
       <main className="flex-grow">
         <section className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900" id="hero">
           <div className="text-center space-y-2">

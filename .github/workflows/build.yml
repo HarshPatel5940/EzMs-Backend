@@ -1,12 +1,10 @@
-name: Build
+name: CI 
 
 on:
   push:
     branches: ['master', 'main']
   pull_request:
     branches: ['master', 'main']
-  schedule:
-    - cron: '0 0 * * 1'
 
 jobs:
   build:
@@ -41,6 +39,13 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+
+      - name: ESLint
+        run: pnpm run lint
+
+      - name: Prettier
+        run: pnpm format:check
+        continue-on-error: true
 
       - name: Build
         run: pnpm run build

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Navbar from '@/components/navbar';
+import MyNavbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ArrowLeftCircleIcon } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
-import server, { cn } from '@/lib/utils';
+import server from '@/lib/utils';
+import { toast } from 'sonner';
+
 import { AxiosError } from 'axios';
 
 export default function SignupPage() {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -58,16 +58,22 @@ export default function SignupPage() {
       });
 
       if (res.status !== 201) {
+        toast.warning('Unexpected Response from Server');
         setErrors('Unexpected Response from Server, response code: ' + res.status);
         return;
       }
-      navigate('/login');
-      toast({
-        title: 'Account Created',
-        description: 'Please login to continue',
-        type: 'foreground',
-        className: cn('top-0 right-0 flex fixed md:max-w-[420px] md:top-20 md:right-4'),
+      toast.success('Account Created Successfully', {
+        description: 'Redirecting to Login Page',
+        duration: 3000,
+        onAutoClose: () => {
+          navigate('/login');
+        },
+        onDismiss: () => {
+          toast.info('Stopped Auto Redirecting to Login Page');
+        },
       });
+
+      navigate('/login');
     } catch (error) {
       if (error instanceof AxiosError) {
         const err = error.response?.data.message.issues[0].message || error.message;
@@ -84,7 +90,7 @@ export default function SignupPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <div>
-        <Navbar />
+        <MyNavbar />
       </div>
 
       <div className="flex flex-col min-h-screen bg-gray-100 justify-center">
