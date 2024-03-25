@@ -21,6 +21,7 @@ export class ProjectService {
         const PROJECT = await this.prisma.project.findUnique({
             where: {
                 slug: `${Slug}`,
+                isDeleted: false,
             },
             select: {
                 slug: true,
@@ -73,6 +74,9 @@ export class ProjectService {
 
     async GetAllProjects() {
         const PROJECTS = await this.prisma.project.findMany({
+            where: {
+                isDeleted: false,
+            },
             select: {
                 slug: true,
                 projectName: true,
