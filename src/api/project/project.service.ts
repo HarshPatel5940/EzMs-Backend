@@ -109,7 +109,6 @@ export class ProjectService {
             );
         }
         const token = await this.pwd.generateToken(projectSlug);
-        Logger.debug(token, "PasswordService");
 
         return await this.prisma.CreateProject(
             projectSlug,
