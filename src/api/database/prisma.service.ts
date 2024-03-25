@@ -134,10 +134,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 projectDesc: projectDesc,
                 projectToken: projectToken,
             },
-            select: {
-                slug: true,
-                createdAt: true,
-            },
         });
     }
 
