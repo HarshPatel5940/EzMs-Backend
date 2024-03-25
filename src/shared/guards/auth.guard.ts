@@ -10,7 +10,7 @@ import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { PrismaService } from "../../api/database/prisma.service";
-import { IS_PUBLIC_KEY, ROLES_KEY } from "./auth.decorator";
+import { IS_PUBLIC_KEY, ROLES_KEY, Roles } from "./auth.decorator";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -58,8 +58,7 @@ export class AuthGuard implements CanActivate {
         }
 
         const userRole = await this.prisma.GetUserRole(payload.email);
-
-        if (payload.role === "admin" && userRole === "admin") {
+        if (payload.role === Roles.Admin && userRole === Roles.Admin) {
             return true;
         }
 
