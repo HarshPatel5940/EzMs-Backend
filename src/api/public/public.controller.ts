@@ -15,6 +15,7 @@ import { PublicRoute } from "../../shared/guards/auth.decorator";
 import { PublicImageGuard } from "../../shared/guards/public.guard";
 import { ProjectService } from "../project/project.service";
 import { Cache } from "cache-manager";
+import { Request, Response } from "express";
 
 /*
  * ATTENTION: DON'T USE THIS ENDPOINT FOR PRODUCTION
@@ -39,14 +40,15 @@ export class PublicController {
     async GetProjectData(
         @Param("slug") slug: string,
         @Param("title") title: string,
-        @Req() req: any,
-        @Res() res: any,
+        @Req() req: Request,
+        @Res() res: Response,
     ) {
-        const response = await this.cacheManager.get(req.url);
+        const response: string =
+            (await this.cacheManager.get(req.url)) || req.url;
 
         if (response) {
             Logger.debug("Redirected Using Cache", "PublicController");
-            await res.redirect(response);
+            res.redirect(response);
             return response;
         }
 

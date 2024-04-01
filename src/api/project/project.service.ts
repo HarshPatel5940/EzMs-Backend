@@ -1,6 +1,7 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
-import { Express } from "express";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
+import { ProjectData } from "@prisma/client";
+
 import {
     projectAccessDto,
     projectCreateDto,
@@ -59,7 +60,7 @@ export class ProjectService {
             throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
         }
 
-        const targetRes = res.projectData.find((data) => {
+        const targetRes = res.projectData.find((data: ProjectData) => {
             if (data.projectId === slug && data.title === title) {
                 return data;
             }

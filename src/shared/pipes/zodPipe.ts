@@ -4,6 +4,7 @@ import { ZodObject } from "zod";
 export class ZodValidationPipe implements PipeTransform {
     private readonly schema;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(schema: ZodObject<any>) {
         this.schema = schema;
     }
