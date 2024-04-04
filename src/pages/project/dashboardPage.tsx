@@ -122,10 +122,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <MyNavbar text="Your Projects" />
+    <div className="flex flex-col">
+      <MyNavbar />
       {isVerified && (
-        <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
+        <main className="flex min-h-screen bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
           <div className="max-w-6xl w-full mx-auto flex items-center gap-4">
             {/* // TODO: implement search functionality */}
             <Input className="shadow-md bg-white dark:bg-gray-950" placeholder="Search projects..." />

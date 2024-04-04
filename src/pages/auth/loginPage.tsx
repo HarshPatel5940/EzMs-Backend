@@ -76,7 +76,7 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <div>
-        <MyNavbar showLoginButton={true} />
+        <MyNavbar />
       </div>
 
       <div className="flex flex-col min-h-screen bg-gray-100 justify-center">
