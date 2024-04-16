@@ -306,7 +306,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
-
+        await this.project.update({
+            where: {
+                slug: slug,
+            },
+            data: {
+                updatedAt: new Date(),
+            },
+        });
         return res;
     }
 
@@ -314,7 +321,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         const res = await this.projectData.delete({
             where: {
                 id: id,
-                // projectId: slug,
             },
             select: {
                 id: true,
@@ -327,7 +333,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
-
+        await this.project.update({
+            where: {
+                slug: slug,
+            },
+            data: {
+                updatedAt: new Date(),
+            },
+        });
         return res;
     }
 

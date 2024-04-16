@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import slugify from "slugify";
 
 @Injectable()
 export class SupabaseService implements OnModuleInit {
@@ -53,7 +54,11 @@ export class SupabaseService implements OnModuleInit {
         const time = Date.now();
 
         if (file.originalname.includes(".")) {
-            file.originalname = file.originalname.replace(".", "-");
+            file.originalname = slugify(file.originalname, {
+                lower: true,
+                replacement: "-",
+                trim: true,
+            });
         }
 
         const filePath = `/data/${file.originalname}-${time}.${

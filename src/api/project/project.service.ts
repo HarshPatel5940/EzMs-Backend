@@ -89,6 +89,9 @@ export class ProjectService {
                 },
                 updatedAt: true,
             },
+            orderBy: {
+                updatedAt: "desc",
+            },
         });
 
         if (!PROJECTS) {
