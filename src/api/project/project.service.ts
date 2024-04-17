@@ -231,7 +231,8 @@ export class ProjectService {
             );
         }
         await this.prisma.AddProjectData(slug, dto, link);
-        return { ...dto, ImageUrl: link };
+        const date = new Date();
+        return { ...dto, ImageUrl: link, createdAt: date, updatedAt: date };
     }
 
     async RegenerateToken(slug: string) {
