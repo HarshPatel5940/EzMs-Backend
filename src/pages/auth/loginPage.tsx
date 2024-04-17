@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MyNavbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import server from '@/lib/utils';
 import { AxiosError } from 'axios';
 import { toast } from 'sonner';
 // todo: remove nookies and store it in session storage
-import { setCookie } from 'nookies';
+import { parseCookies, setCookie } from 'nookies';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -18,6 +18,13 @@ export default function LoginPage() {
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [error, setErrors] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [token] = useState<string | null>(parseCookies().userToken || null);
+
+  useEffect(() => {
+    if (token) {
+      navigate('/projects');
+    }
+  }, []);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -60,7 +67,7 @@ export default function LoginPage() {
       });
 
       toast.success('Logged In Successfully');
-      navigate('/dashboard');
+      navigate('/projects');
     } catch (error) {
       if (error instanceof AxiosError) {
         const err = error.response?.data.message || 'Something went wrong';

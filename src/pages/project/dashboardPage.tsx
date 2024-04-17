@@ -6,16 +6,19 @@ import { Input } from '@/components/ui/input';
 import server from '@/lib/utils';
 import { AxiosError } from 'axios';
 import { destroyCookie, parseCookies } from 'nookies';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [projectCards, setProjectCards] = useState<React.ReactNode[]>([]);
   const [projects, setProjects] = useState<Array<object>>([]);
   const [token] = useState<string | null>(parseCookies().userToken || null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!token) {
@@ -29,7 +32,31 @@ export default function DashboardPage() {
 
   useEffect(() => {
     handleProjects();
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = search;
+    }
+  }, [search]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [search]);
+
+  useEffect(() => {
+    handleProjects();
   }, [projects]);
+
+  function handleSearch() {
+    setSearch(inputRef.current?.value || '');
+  }
 
   const fetchProjects = async () => {
     try {
@@ -92,18 +119,39 @@ export default function DashboardPage() {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     projectCards = projects.map((project: any) => {
-      return (
-        <ProjectCard
-          key={project.slug}
-          slug={project.slug}
-          projectName={project.projectName}
-          projectDesc={project.projectDesc}
-          projectData={project.projectData?.length || 0}
-          updatedAt={project.updatedAt}
-          setProjects={setProjects}
-        />
-      );
+      if (!debouncedSearch) {
+        return (
+          <ProjectCard
+            key={project.slug}
+            slug={project.slug}
+            projectName={project.projectName}
+            projectDesc={project.projectDesc}
+            projectData={project.projectData?.length || 0}
+            updatedAt={project.updatedAt}
+            setProjects={setProjects}
+          />
+        );
+      }
+
+      if (
+        project.slug.toLowerCase().startsWith(debouncedSearch.toLowerCase()) ||
+        project.projectName.toLowerCase().startsWith(debouncedSearch.toLowerCase()) ||
+        project.projectDesc.toLowerCase().startsWith(debouncedSearch.toLowerCase())
+      ) {
+        return (
+          <ProjectCard
+            key={project.slug}
+            slug={project.slug}
+            projectName={project.projectName}
+            projectDesc={project.projectDesc || ''}
+            projectData={project.projectData?.length || 0}
+            updatedAt={project.updatedAt}
+            setProjects={setProjects}
+          />
+        );
+      }
     });
+
     setProjectCards(projectCards);
   }
 
@@ -114,7 +162,9 @@ export default function DashboardPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">{projectCards}</div>
         ) : (
           <div className="text-center space-y-2">
-            <div className="text-4xl opacity-50">No Projects Created Yet!</div>
+            <div className="text-4xl opacity-50">
+              {debouncedSearch ? `No Projects with ${debouncedSearch} Found` : 'No Projects Created Yet!'}
+            </div>
           </div>
         )}
       </div>
@@ -123,12 +173,17 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col">
-      <MyNavbar />
+      <MyNavbar projectName="" />
       {isVerified && (
         <main className="flex min-h-screen bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
           <div className="max-w-6xl w-full mx-auto flex items-center gap-4">
             {/* // TODO: implement search functionality */}
-            <Input className="shadow-md bg-white dark:bg-gray-950" placeholder="Search projects..." />
+            <Input
+              className="shadow-md bg-white dark:bg-gray-950"
+              onChange={handleSearch}
+              ref={inputRef}
+              placeholder="Search projects..."
+            />
             <Button className="sr-only" type="submit">
               Submit
             </Button>

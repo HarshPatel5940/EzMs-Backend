@@ -35,11 +35,11 @@ export default function MyNavbar({ projectName }: NavbarProps) {
     const pathUrl = window.location.pathname.split('/');
     const list: ReactNode[] = [];
 
-    if (pathUrl[1] === 'dashboard') {
+    if (pathUrl[1].startsWith('project')) {
       list.push(
         <BreadcrumbItem>
           <BreadcrumbLink
-            href="/dashboard"
+            href="/projects"
             className="text-gray-600 hover:text-gray-800 dark:text-white dark:hover:text-gray-300 hover:font-bold"
           >
             Projects
@@ -53,7 +53,7 @@ export default function MyNavbar({ projectName }: NavbarProps) {
         <BreadcrumbSeparator className="text-gray-500" />,
         <BreadcrumbItem>
           <BreadcrumbLink
-            href={`/dashboard/${pathUrl[2]}`}
+            href={`/project/${pathUrl[2]}`}
             className="text-gray-600 hover:text-gray-800 dark:text-white dark:hover:text-gray-300 hover:font-bold"
           >
             {projectName}
@@ -61,7 +61,6 @@ export default function MyNavbar({ projectName }: NavbarProps) {
         </BreadcrumbItem>,
       );
     }
-    console.log(list);
     return (
       <Breadcrumb>
         <BreadcrumbList>{...list}</BreadcrumbList>
@@ -103,9 +102,8 @@ export default function MyNavbar({ projectName }: NavbarProps) {
     <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 max-h-14 sticky z-10">
       <nav className="flex items-center">{handleBreadcrumb()}</nav>
       <div className="flex items-center gap-4">
-        <Link className="text-gray-400 hover:text-gray-50" to="https://github.com/HarshPatel5940/ezms-frontend">
-          <image from="/public/github.svg" width={6} height={6} />
-          <span className="sr-only">GitHub</span>
+        <Link to="https://github.com/HarshPatel5940/ezms-frontend">
+          <img src="/github.svg" alt="GitHub" className="w-8 h-8" />
         </Link>
         {handleDropdown()}
       </div>

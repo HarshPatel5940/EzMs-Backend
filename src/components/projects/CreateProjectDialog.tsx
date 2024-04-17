@@ -53,7 +53,7 @@ export default function CreateProjectDialog({
         '/api/project/new',
         {
           projectName,
-          desc: projectDesc,
+          projectDesc,
         },
         {
           headers: {
@@ -120,7 +120,7 @@ export default function CreateProjectDialog({
           Tip: Projects are used to organize your images and who can access them.
         </div>
         <DialogFooter>
-          <Button onClick={handleSubmit} disabled={loading}>
+          <Button onClick={handleSubmit} disabled={loading || projectName.length < 4}>
             Create Project
           </Button>
         </DialogFooter>

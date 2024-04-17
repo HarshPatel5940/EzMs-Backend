@@ -9,6 +9,7 @@ import SignupPage from '@/pages/auth/signupPage.tsx';
 import HomePage from './pages/rootPage.tsx';
 import NotFoundPage from './pages/notFoundPage.tsx';
 import DashboardPage from './pages/project/dashboardPage.tsx';
+import ProjectPage from './pages/project/project.tsx';
 
 const router = createBrowserRouter([
   {
@@ -26,8 +27,12 @@ const router = createBrowserRouter([
         element: <SignupPage />,
       },
       {
-        path: 'dashboard',
+        path: 'projects',
         element: <DashboardPage />,
+      },
+      {
+        path: 'project/:projectId',
+        element: <ProjectPage />,
       },
       {
         path: '*',

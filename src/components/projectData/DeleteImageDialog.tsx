@@ -12,17 +12,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import server from '@/lib/utils';
 import { AxiosError } from 'axios';
-import { Trash2Icon } from 'lucide-react';
 import { parseCookies } from 'nookies';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { ProjectData } from '../projectDataCard';
 
-export default function DeleteProjectDialog({
+export default function DeleteProjectDataDialog({
   projectSlug,
-  setProjects,
+  imageId,
+  setProjectData,
 }: {
   projectSlug: string;
-  setProjects?: React.Dispatch<React.SetStateAction<Array<object>>>;
+  imageId: string;
+  setProjectData: React.Dispatch<React.SetStateAction<ProjectData[]>>;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,6 +45,8 @@ export default function DeleteProjectDialog({
 
   const handleSubmit = async () => {
     setLoading(true);
+    if (!imageId || !projectSlug) return;
+
     if (deleteText !== 'delete') {
       setLoading(false);
       toast.warning('Please write "delete" to confirm');
@@ -52,7 +56,7 @@ export default function DeleteProjectDialog({
     }
 
     try {
-      const res = await server.delete(`/api/project/${projectSlug}`, {
+      const res = await server.delete(`/api/project/${projectSlug}/data/${imageId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -62,8 +66,8 @@ export default function DeleteProjectDialog({
         toast.error('Unexpected Response from Server');
         return;
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setProjects?.(prev => prev.filter((project: any) => project.slug !== projectSlug));
+
+      setProjectData?.(prev => prev.filter((projectData: ProjectData) => projectData.id !== imageId));
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
@@ -92,8 +96,8 @@ export default function DeleteProjectDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <Trash2Icon className="w-4 h-4" />
+        <Button variant={'destructive'} className="w-full">
+          Delete
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] md:max-w-[28rem]">

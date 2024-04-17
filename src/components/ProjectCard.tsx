@@ -40,14 +40,13 @@ export default function MyProjectCard(props: ProjectCardProps) {
           <Link to={`/project/${props.slug}`}>
             <div className="grid gap-1">
               <CardTitle>{props.projectName}</CardTitle>
+              <CardDescription className="max-h-2">{props.slug}</CardDescription>
             </div>
           </Link>
         </div>
         <DeleteProjectDialog projectSlug={props.slug} setProjects={props.setProjects} />
       </CardHeader>
-      <CardContent>
-        <CardDescription>{props.projectDesc}</CardDescription>
-      </CardContent>
+      <CardContent>{props.projectDesc}</CardContent>
       <CardFooter>
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-1">
