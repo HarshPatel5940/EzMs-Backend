@@ -295,9 +295,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                     },
                 },
             },
-            select: {
-                imageUrl: true,
-            },
         });
 
         if (!res) {

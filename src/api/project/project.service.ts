@@ -230,9 +230,7 @@ export class ProjectService {
                 HttpStatus.CONFLICT,
             );
         }
-        await this.prisma.AddProjectData(slug, dto, link);
-        const date = new Date();
-        return { ...dto, ImageUrl: link, createdAt: date, updatedAt: date };
+        return await this.prisma.AddProjectData(slug, dto, link);
     }
 
     async RegenerateToken(slug: string) {
