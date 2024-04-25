@@ -175,7 +175,7 @@ export class ProjectService {
             id,
             title,
             description || "No Description Provided",
-            url || "No Url Provided",
+            url || null,
         );
     }
 

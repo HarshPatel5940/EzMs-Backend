@@ -197,7 +197,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         targetId: string,
         title: string,
         description: string,
-        url: string,
+        url: string | null,
     ) {
         return await this.projectData.update({
             where: {
@@ -207,10 +207,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 title: title,
                 description: description,
                 url: url,
-            },
-            select: {
-                id: true,
-                updatedAt: true,
             },
         });
     }
