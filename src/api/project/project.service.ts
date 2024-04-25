@@ -29,7 +29,11 @@ export class ProjectService {
                 projectName: true,
                 projectDesc: true,
                 projectToken: true,
-                projectData: true,
+                projectData: {
+                    orderBy: {
+                        updatedAt: "desc",
+                    },
+                },
                 users: {
                     select: {
                         email: true,
