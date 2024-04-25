@@ -1,30 +1,37 @@
-# React + TypeScript + Vite
+<div align="center">
+<h1> EzMs Frontend</h1>
+<p> A Clean, simple Frontend made to manage the CMS API using React and Typescript</p>
+<p>
+<img src="https://repository-images.githubusercontent.com/733384623/1292b76c-542b-46d1-89fb-0e1840f67e50" alt="EzMs Banner" />
+</p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+</div>
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Install the dependencies
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
+```bash
+pnpm i
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+2. Make sure to
+    - Create a .env file in the root directory
+    - Check the `package.json` file for more scripts
+
+---
+To Start Development Server
+
+```bash
+pnpm run dev
+```
+
+To Start Production Server
+
+```bash
+pnpm run start
+```
+
+## License
+
+EzMs is [MIT licensed](LICENSE).
