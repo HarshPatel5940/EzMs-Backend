@@ -15,7 +15,7 @@ import { AxiosError } from 'axios';
 import { parseCookies } from 'nookies';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { ProjectData } from '../projectDataCard';
+import type { ProjectData } from '../projectDataCard';
 
 export default function DeleteProjectDataDialog({
   projectSlug,
@@ -38,7 +38,9 @@ export default function DeleteProjectDataDialog({
       setIsDeleteDisabled(false);
     } else {
       setIsDeleteDisabled(true);
-      document.getElementById('projectName')?.classList.remove(...['border-red-500', 'border-2']);
+      document
+        .getElementById('projectName')
+        ?.classList.remove(...['border-red-500', 'border-2']);
     }
   };
   // TODO: handle delete when someone types "delete" and clicks enter
@@ -51,23 +53,30 @@ export default function DeleteProjectDataDialog({
       setLoading(false);
       toast.warning('Please write "delete" to confirm');
       document.getElementById('projectName')?.focus();
-      document.getElementById('projectName')?.classList.add(...['border-red-500', 'border-2']);
+      document
+        .getElementById('projectName')
+        ?.classList.add(...['border-red-500', 'border-2']);
       return;
     }
 
     try {
-      const res = await server.delete(`/api/project/${projectSlug}/data/${imageId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await server.delete(
+        `/api/project/${projectSlug}/data/${imageId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (res.status !== 200) {
         console.error('Unexpected Response from Server', res.status);
         toast.error('Unexpected Response from Server');
         return;
       }
 
-      setProjectData?.(prev => prev.filter((projectData: ProjectData) => projectData.id !== imageId));
+      setProjectData(prev =>
+        prev.filter((projectData: ProjectData) => projectData.id !== imageId)
+      );
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
@@ -103,14 +112,24 @@ export default function DeleteProjectDataDialog({
       <DialogContent className="max-w-[20rem] md:max-w-[28rem]">
         <DialogHeader>
           <DialogTitle>Delete Project</DialogTitle>
-          <DialogDescription>This will delete project {projectSlug}</DialogDescription>
+          <DialogDescription>
+            This will delete project {projectSlug}
+          </DialogDescription>
         </DialogHeader>
         <Label htmlFor="name" className="text-left flex">
           Confirm by writing "delete" <div className="text-red-600">*</div>
         </Label>
-        <Input type="text" placeholder='Write "delete" to proceed' onChange={handleDeleteText} />
+        <Input
+          type="text"
+          placeholder='Write "delete" to proceed'
+          onChange={handleDeleteText}
+        />
         <DialogFooter>
-          <Button variant={'destructive'} onClick={handleSubmit} disabled={loading || isDeleteDisabled}>
+          <Button
+            variant={'destructive'}
+            onClick={handleSubmit}
+            disabled={loading || isDeleteDisabled}
+          >
             Delete Project
           </Button>
         </DialogFooter>

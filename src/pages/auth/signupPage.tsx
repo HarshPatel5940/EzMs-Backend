@@ -31,7 +31,9 @@ export default function SignupPage() {
     setPassword(event.target.value);
   };
 
-  const handleConfirmPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleConfirmPasswordChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setConfirmPassword(event.target.value);
   };
 
@@ -39,7 +41,12 @@ export default function SignupPage() {
     event.preventDefault();
     setErrors('');
     setIsLoading(true);
-    if (!email.trim() && !password.trim() && !name.trim() && !confirmPassword.trim()) {
+    if (
+      !email.trim() &&
+      !password.trim() &&
+      !name.trim() &&
+      !confirmPassword.trim()
+    ) {
       setErrors('Please fill all the fields');
       setIsLoading(false);
       return;
@@ -59,7 +66,9 @@ export default function SignupPage() {
 
       if (res.status !== 201) {
         toast.warning('Unexpected Response from Server');
-        setErrors('Unexpected Response from Server, response code: ' + res.status);
+        setErrors(
+          `Unexpected Response from Server, response code: ${res.status}`
+        );
         return;
       }
       toast.success('Account Created Successfully', {
@@ -76,7 +85,8 @@ export default function SignupPage() {
       navigate('/login');
     } catch (error) {
       if (error instanceof AxiosError) {
-        const err = error.response?.data.message.issues[0].message || error.message;
+        const err =
+          error.response?.data.message.issues[0].message || error.message;
         setErrors(err);
 
         return;
@@ -158,11 +168,19 @@ export default function SignupPage() {
                   </div>
                 </div>
                 <div className="flex justify-center">
-                  <Button className=" text-white font-bold px-4 rounded" type="submit" disabled={isLoading}>
+                  <Button
+                    className=" text-white font-bold px-4 rounded"
+                    type="submit"
+                    disabled={isLoading}
+                  >
                     {isLoading ? 'Signing Up' : 'Sign Up'}
                   </Button>
                 </div>
-                {error && <span className="flex justify-center text-red-500 ">{error}</span>}
+                {error && (
+                  <span className="flex justify-center text-red-500 ">
+                    {error}
+                  </span>
+                )}
               </div>
             </form>
           </div>

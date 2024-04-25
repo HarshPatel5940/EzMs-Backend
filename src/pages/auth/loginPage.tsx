@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MyNavbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ export default function LoginPage() {
     if (token) {
       navigate('/projects');
     }
-  }, []);
+  }, [token, navigate]);
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -57,7 +58,9 @@ export default function LoginPage() {
 
       if (res.status !== 200) {
         toast.warning('Unexpected Response from Server');
-        setErrors('Unexpected Response from Server, response code: ' + res.status);
+        setErrors(
+          `Unexpected Response from Server, response code: ${res.status}`
+        );
         return;
       }
 
@@ -138,7 +141,11 @@ export default function LoginPage() {
                     Login
                   </Button>
                 </div>
-                {error && <span className="flex justify-center text-red-500 ">{error}</span>}
+                {error && (
+                  <span className="flex justify-center text-red-500 ">
+                    {error}
+                  </span>
+                )}
               </div>
             </form>
           </div>

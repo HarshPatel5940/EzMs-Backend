@@ -13,22 +13,19 @@ import { Label } from '@/components/ui/label';
 import server from '@/lib/utils';
 import { AxiosError, type AxiosResponse } from 'axios';
 import { parseCookies } from 'nookies';
-import { type ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { Textarea } from '../ui/textarea';
 import type { ProjectData } from '../projectDataCard';
 
-export default function CreateProjectDataDialog({
-  projectSlug,
-  setProjectData,
+export default function UpdateProjectDataDialog({
+  projectData,
 }: {
-  projectSlug: string;
-  setProjectData: React.Dispatch<React.SetStateAction<ProjectData[]>>;
+  projectData: ProjectData;
 }) {
-  const [imageTitle, setImageTitle] = useState<string>('');
-  const [imageDesc, setImageDesc] = useState<string>('');
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [image, setImage] = useState<File>();
+  const [imageTitle, setImageTitle] = useState<string>(projectData.title);
+  const [imageDesc, setImageDesc] = useState<string>(projectData.description);
+  const [url, setUrl] = useState<string>(projectData.url);
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const [token] = useState<string | null>(parseCookies().userToken || null);
@@ -43,14 +40,8 @@ export default function CreateProjectDataDialog({
     setImageDesc(e.target.value);
   };
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImage(e.target.files[0]);
-    }
-  };
-
   const handleImageURL = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImageUrl(e.target.value);
+    setUrl(e.target.value);
   };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -67,18 +58,15 @@ export default function CreateProjectDataDialog({
       return;
     }
 
-    if (!image) return;
-
     let res: AxiosResponse;
 
     try {
-      res = await server.postForm(
-        `/api/project/${projectSlug}/data/new`,
+      res = await server.patch(
+        `/api/project/${projectData.projectId}/data/${projectData.title}`,
         {
           title: imageTitle,
           description: imageDesc,
-          image: image,
-          url: imageUrl,
+          url: url,
         },
         {
           headers: {
@@ -87,7 +75,7 @@ export default function CreateProjectDataDialog({
         }
       );
 
-      if (res.status !== 201) {
+      if (res.status !== 200) {
         toast.warning(`Unexpected Response Code - ${res.status}`);
         return;
       }
@@ -95,8 +83,8 @@ export default function CreateProjectDataDialog({
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
           const res =
-            error.response.data.errors[0].message ||
-            'An error occurred while creating the project';
+            error.response.data.message ||
+            'An error occurred while updating the project';
           toast.warning(res);
         }
 
@@ -111,13 +99,21 @@ export default function CreateProjectDataDialog({
       }
       setLoading(false);
       return;
+    } finally {
+      setLoading(false);
     }
     const data = res.data;
 
     data.key = res.data.title;
 
-    setProjectData(prev => [...prev, data]);
-    setLoading(false);
+    projectData.setProjectData(prev => {
+      const newPrev = prev.filter(
+        (project: ProjectData) => project.title !== projectData.title
+      );
+
+      return [data, ...newPrev];
+    });
+
     setOpen(false);
     return;
   };
@@ -130,45 +126,38 @@ export default function CreateProjectDataDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button>Add Image</Button>
+        <Button className="w-full bg-blue-600 hover:bg-blue-500 bg-opacity-90">
+          Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] md:max-w-[28rem]">
         <DialogHeader>
-          <DialogTitle>Add An Image</DialogTitle>
+          <DialogTitle>Update Image Details</DialogTitle>
           <DialogDescription>
-            Add a new image which you can easily share and start using.
+            Update an exsisting images details here!
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2">
           <Label htmlFor="name" className="text-left flex">
-            Image Title <div className="text-red-600">*</div>
+            New Image Title
           </Label>
           <Input
             id="imageTitle"
             placeholder="my-cool-image-title / Ex: Sponsor Name"
             required={true}
+            defaultValue={projectData.title}
             onChange={handleImageName}
           />
         </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor="name" className="text-left">
-            Image Description
+            New Image Description
           </Label>
           <Textarea
             id="imageDesc"
             placeholder="A short description of your image"
+            defaultValue={projectData.description}
             onChange={handleImageDesc}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="name" className="text-left flex">
-            Upload Image <div className="text-red-600">*</div>
-          </Label>
-          <Input
-            id="image-ProjectData"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -180,12 +169,13 @@ export default function CreateProjectDataDialog({
             placeholder="The URL you want to link with image"
             required={true}
             type="url"
+            defaultValue={projectData.url}
             onChange={handleImageURL}
           />
         </div>
         <div className="text-xs text-gray-500 font-bold">
-          Tip: Images are uploaded to quickly use in your frontend apps or share
-          it with others...
+          Tip: Edit these misc details and easily manage the images you looking
+          for on the client side!
         </div>
         <DialogFooter>
           <Button
@@ -193,11 +183,10 @@ export default function CreateProjectDataDialog({
             disabled={
               loading ||
               imageTitle.length < 4 ||
-              (imageUrl ? imageUrl.length < 10 : false) ||
-              !image
+              (url ? url.length < 10 : false)
             }
           >
-            Add Image
+            Update Image
           </Button>
         </DialogFooter>
       </DialogContent>

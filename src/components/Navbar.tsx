@@ -16,7 +16,7 @@ import {
   DropdownMenu,
 } from '@/components/ui/dropdown-menu';
 import { UserIcon, LogOutIcon } from 'lucide-react';
-import { ReactNode, useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 interface NavbarProps {
   projectName?: string;
@@ -44,7 +44,7 @@ export default function MyNavbar({ projectName }: NavbarProps) {
           >
             Projects
           </BreadcrumbLink>
-        </BreadcrumbItem>,
+        </BreadcrumbItem>
       );
     }
 
@@ -58,7 +58,7 @@ export default function MyNavbar({ projectName }: NavbarProps) {
           >
             {projectName}
           </BreadcrumbLink>
-        </BreadcrumbItem>,
+        </BreadcrumbItem>
       );
     }
     return (

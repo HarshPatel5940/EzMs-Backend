@@ -6,15 +6,17 @@ import { Input } from '@/components/ui/input';
 import server from '@/lib/utils';
 import { AxiosError } from 'axios';
 import { destroyCookie, parseCookies } from 'nookies';
-import React, { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import type { Project } from './project';
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [projectCards, setProjectCards] = useState<React.ReactNode[]>([]);
-  const [projects, setProjects] = useState<Array<object>>([]);
+  const [projects, setProjects] = useState<Array<Project>>([]);
   const [token] = useState<string | null>(parseCookies().userToken || null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
@@ -28,11 +30,11 @@ export default function DashboardPage() {
     }
     fetchProjects();
     checkAdmin();
-  }, []);
+  }, [token, navigate]);
 
   useEffect(() => {
-    handleProjects();
-  }, [debouncedSearch]);
+    handleProjects(projects, debouncedSearch);
+  }, [projects, debouncedSearch]);
 
   useEffect(() => {
     if (inputRef.current) {
@@ -49,10 +51,6 @@ export default function DashboardPage() {
       clearTimeout(timeoutId);
     };
   }, [search]);
-
-  useEffect(() => {
-    handleProjects();
-  }, [projects]);
 
   function handleSearch() {
     setSearch(inputRef.current?.value || '');
@@ -73,8 +71,8 @@ export default function DashboardPage() {
       }
 
       const data = res.data;
-      setIsVerified(true);
       setProjects(data);
+      setIsVerified(true);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
@@ -114,11 +112,11 @@ export default function DashboardPage() {
     }
   };
 
-  function handleProjects() {
+  function handleProjects(projects: Project[], debouncedSearch?: string) {
     let projectCards: React.ReactNode[] = [];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    projectCards = projects.map((project: any) => {
+    projectCards = projects.map((project: Project) => {
       if (!debouncedSearch) {
         return (
           <ProjectCard
@@ -135,8 +133,12 @@ export default function DashboardPage() {
 
       if (
         project.slug.toLowerCase().startsWith(debouncedSearch.toLowerCase()) ||
-        project.projectName.toLowerCase().startsWith(debouncedSearch.toLowerCase()) ||
-        project.projectDesc.toLowerCase().startsWith(debouncedSearch.toLowerCase())
+        project.projectName
+          .toLowerCase()
+          .startsWith(debouncedSearch.toLowerCase()) ||
+        project.projectDesc
+          .toLowerCase()
+          .startsWith(debouncedSearch.toLowerCase())
       ) {
         return (
           <ProjectCard
@@ -159,11 +161,15 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col items-center">
         {projectCards.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">{projectCards}</div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">
+            {projectCards}
+          </div>
         ) : (
           <div className="text-center space-y-2">
             <div className="text-4xl opacity-50">
-              {debouncedSearch ? `No Projects with ${debouncedSearch} Found` : 'No Projects Created Yet!'}
+              {debouncedSearch
+                ? `No Projects with ${debouncedSearch} Found`
+                : 'No Projects Created Yet!'}
             </div>
           </div>
         )}
@@ -193,7 +199,9 @@ export default function DashboardPage() {
         </main>
       )}
       <footer className="p-5 text-center bg-white dark:bg-gray-800">
-        <p className="text-gray-600 dark:text-gray-400">© 2023 by HarshPatel5940. All rights reserved.</p>
+        <p className="text-gray-600 dark:text-gray-400">
+          © 2023 by HarshPatel5940. All rights reserved.
+        </p>
       </footer>
     </div>
   );

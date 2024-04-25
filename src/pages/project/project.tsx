@@ -1,12 +1,15 @@
 import MyNavbar from '@/components/Navbar';
 import AddImageDialog from '@/components/projectData/AddImageDialog';
-import ProjectDataCard, { ProjectData } from '@/components/projectDataCard';
+import ProjectDataCard, {
+  type ProjectData,
+} from '@/components/projectDataCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import server from '@/lib/utils';
 import { AxiosError } from 'axios';
 import { destroyCookie, parseCookies } from 'nookies';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -37,7 +40,7 @@ export default function ProjectsPage() {
       return;
     }
     fetchProjectData();
-  }, []);
+  }, [token, navigate]);
 
   useEffect(() => {
     if (!project) return;
@@ -46,10 +49,8 @@ export default function ProjectsPage() {
   }, [project]);
 
   useEffect(() => {
-    handleProjectData();
+    handleProjectData(projectData);
   }, [projectData]);
-
-  useEffect(() => {}, [projectCards]);
 
   const fetchProjectData = async () => {
     try {
@@ -96,7 +97,7 @@ export default function ProjectsPage() {
     }
   };
 
-  function handleProjectData() {
+  function handleProjectData(projectData: ProjectData[]) {
     let projectCards: React.ReactNode[] = [];
     if (!project) {
       return;
@@ -125,7 +126,9 @@ export default function ProjectsPage() {
     return (
       <div className="flex flex-col items-center w-full">
         {projectCards.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">{projectCards}</div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">
+            {projectCards}
+          </div>
         ) : (
           <div className="text-center space-y-2">
             <div className="text-4xl opacity-50">No Data Added Yet!</div>
@@ -142,17 +145,25 @@ export default function ProjectsPage() {
         <main className="flex min-h-screen bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
           <div className="max-w-6xl w-full mx-auto flex items-center gap-4">
             {/* // TODO: implement search functionality */}
-            <Input className="shadow-md bg-white dark:bg-gray-950" placeholder="Search projects..." />
+            <Input
+              className="shadow-md bg-white dark:bg-gray-950"
+              placeholder="Search projects..."
+            />
             <Button className="sr-only" type="submit">
               Submit
             </Button>
-            <AddImageDialog projectSlug={projectId || ''} setProjectData={setProjectData} />
+            <AddImageDialog
+              projectSlug={projectId || ''}
+              setProjectData={setProjectData}
+            />
           </div>
           {displayDataTable()}
         </main>
       )}
       <footer className="p-5 text-center bg-white dark:bg-gray-800">
-        <p className="text-gray-600 dark:text-gray-400">© 2023 by HarshPatel5940. All rights reserved.</p>
+        <p className="text-gray-600 dark:text-gray-400">
+          © 2023 by HarshPatel5940. All rights reserved.
+        </p>
       </footer>
     </div>
   );

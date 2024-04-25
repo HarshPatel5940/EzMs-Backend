@@ -16,11 +16,12 @@ import { parseCookies } from 'nookies';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Textarea } from '../ui/textarea';
+import type { Project } from '@/pages/project/project';
 
 export default function CreateProjectDialog({
   setProjects,
 }: {
-  setProjects: React.Dispatch<React.SetStateAction<Array<object>>>;
+  setProjects: React.Dispatch<React.SetStateAction<Array<Project>>>;
 }) {
   const [projectName, setProjectName] = useState<string>('');
   const [projectDesc, setProjectDesc] = useState<string>('');
@@ -30,7 +31,9 @@ export default function CreateProjectDialog({
 
   const handleProjectName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProjectName(e.target.value);
-    document.getElementById('projectName')?.classList.remove(...['border-red-500', 'border-2']);
+    document
+      .getElementById('projectName')
+      ?.classList.remove(...['border-red-500', 'border-2']);
   };
   const handleProjectDesc = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setProjectDesc(e.target.value);
@@ -44,7 +47,9 @@ export default function CreateProjectDialog({
       setLoading(false);
       toast.warning('Project name must be at least 4 characters long');
       document.getElementById('projectName')?.focus();
-      document.getElementById('projectName')?.classList.add(...['border-red-500', 'border-2']);
+      document
+        .getElementById('projectName')
+        ?.classList.add(...['border-red-500', 'border-2']);
       return;
     }
 
@@ -59,7 +64,7 @@ export default function CreateProjectDialog({
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
+        }
       );
 
       if (res.status !== 201) {
@@ -72,13 +77,16 @@ export default function CreateProjectDialog({
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
-          const res = error.response.data.errors[0].message || 'An error occurred while creating the project';
+          const res =
+            error.response.data.errors[0].message ||
+            'An error occurred while creating the project';
           toast.warning(res);
         }
 
         if (error.response?.status === 409) {
           toast.error('Project with this name already exists', {
-            description: 'Use Different Name OR "Rename Project Later to this name.',
+            description:
+              'Use Different Name OR "Rename Project Later to this name.',
           });
         }
       } else {
@@ -106,21 +114,36 @@ export default function CreateProjectDialog({
       <DialogContent className="max-w-[20rem] md:max-w-[28rem]">
         <DialogHeader>
           <DialogTitle>Create Projects</DialogTitle>
-          <DialogDescription>Add a new project to your workspace.</DialogDescription>
+          <DialogDescription>
+            Add a new project to your workspace.
+          </DialogDescription>
         </DialogHeader>
         <Label htmlFor="name" className="text-left flex">
           Name <div className="text-red-600">*</div>
         </Label>
-        <Input id="projectName" placeholder="my-cool-project" required={true} onChange={handleProjectName} />
+        <Input
+          id="projectName"
+          placeholder="my-cool-project"
+          required={true}
+          onChange={handleProjectName}
+        />
         <Label htmlFor="name" className="text-left">
           Description
         </Label>
-        <Textarea id="projectDesc" placeholder="A short description of your project" onChange={handleProjectDesc} />
+        <Textarea
+          id="projectDesc"
+          placeholder="A short description of your project"
+          onChange={handleProjectDesc}
+        />
         <div className="text-xs text-gray-500 font-bold">
-          Tip: Projects are used to organize your images and who can access them.
+          Tip: Projects are used to organize your images and who can access
+          them.
         </div>
         <DialogFooter>
-          <Button onClick={handleSubmit} disabled={loading || projectName.length < 4}>
+          <Button
+            onClick={handleSubmit}
+            disabled={loading || projectName.length < 4}
+          >
             Create Project
           </Button>
         </DialogFooter>
