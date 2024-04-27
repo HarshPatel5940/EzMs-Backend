@@ -1,4 +1,5 @@
 import MyNavbar from '@/components/Navbar';
+import SideBar from '@/components/SideBar';
 import AddImageDialog from '@/components/projectData/AddImageDialog';
 import ProjectDataCard, {
   type ProjectData,
@@ -24,7 +25,7 @@ export interface Project {
   updatedAt: string;
 }
 
-export default function ProjectsPage() {
+export default function ManageProjectDataPage() {
   const navigate = useNavigate();
   const [projectCards, setProjectCards] = useState<React.ReactNode[]>([]);
   const [project, setProject] = useState<Project | null>(null);
@@ -126,7 +127,7 @@ export default function ProjectsPage() {
     return (
       <div className="flex flex-col items-center w-full">
         {projectCards.length > 0 ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 max-w-6xl w-full mx-auto">
             {projectCards}
           </div>
         ) : (
@@ -139,27 +140,30 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <MyNavbar projectName={project?.projectName} />
-      {isVerified && (
-        <main className="flex min-h-screen bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
-          <div className="max-w-6xl w-full mx-auto flex items-center gap-4">
-            {/* // TODO: implement search functionality */}
-            <Input
-              className="shadow-md bg-white dark:bg-gray-950"
-              placeholder="Search projects..."
-            />
-            <Button className="sr-only" type="submit">
-              Submit
-            </Button>
-            <AddImageDialog
-              projectSlug={projectId || ''}
-              setProjectData={setProjectData}
-            />
-          </div>
-          {displayDataTable()}
-        </main>
-      )}
+      <div className="flex flex-row w-full">
+        <SideBar baseUrl={`/project/${project?.slug}`} />
+        {isVerified && (
+          <main className="flex min-h-screen bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
+            <div className="max-w-6xl w-full mx-auto flex items-center gap-4">
+              {/* // TODO: implement search functionality */}
+              <Input
+                className="shadow-md bg-white dark:bg-gray-950"
+                placeholder="Search projects..."
+              />
+              <Button className="sr-only" type="submit">
+                Submit
+              </Button>
+              <AddImageDialog
+                projectSlug={projectId || ''}
+                setProjectData={setProjectData}
+              />
+            </div>
+            {displayDataTable()}
+          </main>
+        )}
+      </div>
       <footer className="p-5 text-center bg-white dark:bg-gray-800">
         <p className="text-gray-600 dark:text-gray-400">
           © 2023 by HarshPatel5940. All rights reserved.

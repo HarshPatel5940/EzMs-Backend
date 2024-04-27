@@ -11,19 +11,17 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import server from '@/lib/utils';
-import type { Project } from '@/pages/project/manageProjectData';
 import { AxiosError } from 'axios';
-import { Trash2Icon } from 'lucide-react';
 import { parseCookies } from 'nookies';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-export default function DeleteProjectDialog({
+export default function ResetProjectToken({
   projectSlug,
-  setProjects,
+  setProjectToken,
 }: {
   projectSlug: string;
-  setProjects?: React.Dispatch<React.SetStateAction<Array<Project>>>;
+  setProjectToken: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -33,7 +31,7 @@ export default function DeleteProjectDialog({
 
   const handleDeleteText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDeleteText(e.target.value);
-    if (e.target.value === 'delete') {
+    if (e.target.value === 'confirm') {
       setIsDeleteDisabled(false);
     } else {
       setIsDeleteDisabled(true);
@@ -42,13 +40,13 @@ export default function DeleteProjectDialog({
         ?.classList.remove(...['border-red-500', 'border-2']);
     }
   };
-  // TODO: handle delete when someone types "delete" and clicks enter
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (deleteText !== 'delete') {
+
+    if (deleteText !== 'confirm') {
       setLoading(false);
-      toast.warning('Please write "delete" to confirm');
+      toast.warning('Please write "confirm" to confirm');
       document.getElementById('projectName')?.focus();
       document
         .getElementById('projectName')
@@ -57,25 +55,32 @@ export default function DeleteProjectDialog({
     }
 
     try {
-      const res = await server.delete(`/api/project/${projectSlug}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (res.status !== 200) {
+      const res = await server.post(
+        `/api/project/${projectSlug}/token`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status !== 201) {
         console.error('Unexpected Response from Server', res.status);
         toast.error('Unexpected Response from Server');
         return;
       }
 
+      const data = res.data.projectToken;
+      setProjectToken(data);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setProjects?.(prev =>
-        prev.filter((project: Project) => project.slug !== projectSlug)
-      );
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
-          toast.warning('Please Re-Login to Continue');
+          toast.warning('Please Re-Login to Continue', {
+            description: `status: ${error.response.status}`,
+          });
           return;
         }
         if (error.response?.status === 401) {
@@ -100,23 +105,21 @@ export default function DeleteProjectDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="ghost">
-          <Trash2Icon className="w-4 h-4" />
-        </Button>
+        <Button variant="destructive">Reset Token</Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] md:max-w-[28rem]">
         <DialogHeader>
-          <DialogTitle>Delete Project</DialogTitle>
+          <DialogTitle>Reset Project Token</DialogTitle>
           <DialogDescription>
-            This will delete project {projectSlug}
+            This will reset the access token for the project {projectSlug}
           </DialogDescription>
         </DialogHeader>
         <Label htmlFor="name" className="text-left flex">
-          Confirm by writing "delete" <div className="text-red-600">*</div>
+          Confirm by writing "confirm" <div className="text-red-600">*</div>
         </Label>
         <Input
           type="text"
-          placeholder='Write "delete" to proceed'
+          placeholder='Write "confirm" to proceed'
           onChange={handleDeleteText}
         />
         <DialogFooter>
@@ -125,7 +128,7 @@ export default function DeleteProjectDialog({
             onClick={handleSubmit}
             disabled={loading || isDeleteDisabled}
           >
-            Delete Project
+            Confirm Reset
           </Button>
         </DialogFooter>
       </DialogContent>

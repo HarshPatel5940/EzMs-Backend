@@ -10,7 +10,8 @@ import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import type { Project } from './project';
+import type { Project } from './manageProjectData';
+
 export default function DashboardPage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');

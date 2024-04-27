@@ -8,8 +8,9 @@ import LoginPage from '@/pages/auth/loginPage.tsx';
 import SignupPage from '@/pages/auth/signupPage.tsx';
 import HomePage from './pages/rootPage.tsx';
 import NotFoundPage from './pages/notFoundPage.tsx';
-import DashboardPage from './pages/project/dashboardPage.tsx';
-import ProjectPage from './pages/project/project.tsx';
+import ProjectsPage from './pages/project/projectsPage.tsx';
+import ManageProjectDataPage from './pages/project/manageProjectData.tsx';
+import ManageProjectsPage from './pages/project/manageProject.tsx';
 
 const router = createBrowserRouter([
   {
@@ -28,11 +29,15 @@ const router = createBrowserRouter([
       },
       {
         path: 'projects',
-        element: <DashboardPage />,
+        element: <ProjectsPage />,
       },
       {
         path: 'project/:projectId',
-        element: <ProjectPage />,
+        element: <ManageProjectDataPage />,
+      },
+      {
+        path: 'project/:projectId/manage',
+        element: <ManageProjectsPage />,
       },
       {
         path: '*',

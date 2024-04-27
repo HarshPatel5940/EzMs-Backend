@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from './ui/card';
-import type { Project } from '@/pages/project/project';
+import type { Project } from '@/pages/project/manageProjectData';
 
 export interface ProjectCardProps {
   slug: string;

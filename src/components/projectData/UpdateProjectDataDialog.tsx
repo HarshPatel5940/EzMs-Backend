@@ -79,6 +79,18 @@ export default function UpdateProjectDataDialog({
         toast.warning(`Unexpected Response Code - ${res.status}`);
         return;
       }
+
+      const data = res.data;
+
+      data.key = res.data.title;
+
+      projectData.setProjectData(prev => {
+        const newPrev = prev.filter(
+          (project: ProjectData) => project.title !== projectData.title
+        );
+
+        return [data, ...newPrev];
+      });
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
@@ -102,17 +114,6 @@ export default function UpdateProjectDataDialog({
     } finally {
       setLoading(false);
     }
-    const data = res.data;
-
-    data.key = res.data.title;
-
-    projectData.setProjectData(prev => {
-      const newPrev = prev.filter(
-        (project: ProjectData) => project.title !== projectData.title
-      );
-
-      return [data, ...newPrev];
-    });
 
     setOpen(false);
     return;

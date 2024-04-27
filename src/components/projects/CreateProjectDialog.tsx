@@ -16,7 +16,7 @@ import { parseCookies } from 'nookies';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Textarea } from '../ui/textarea';
-import type { Project } from '@/pages/project/project';
+import type { Project } from '@/pages/project/manageProjectData';
 
 export default function CreateProjectDialog({
   setProjects,

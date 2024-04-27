@@ -23,12 +23,13 @@ interface NavbarProps {
 }
 
 export default function MyNavbar({ projectName }: NavbarProps) {
+  // TODO: Try using the new reditect() from react-router-dom
   const navigate = useNavigate();
   const [token] = useState<string | null>(parseCookies().userToken || null);
 
   const handleLogout = () => {
-    navigate('/login');
     destroyCookie(null, 'userToken');
+    navigate('/login');
   };
 
   const handleBreadcrumb = () => {
