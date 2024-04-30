@@ -136,12 +136,16 @@ export class ProjectService {
             throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
         }
 
-        if (res) {
-            throw new HttpException(
-                "Project With the New Name Already Exists",
-                HttpStatus.CONFLICT,
-            );
+        // if new slug same as current slug allow
+        if (projectSlug !== slug) {
+            if (res) {
+                throw new HttpException(
+                    "Project With the New Name Already Exists",
+                    HttpStatus.CONFLICT,
+                );
+            }
         }
+
         const newToken = await this.pwd.generateToken(projectSlug);
         return await this.prisma.UpdateProject(
             slug,
