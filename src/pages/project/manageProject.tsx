@@ -27,6 +27,9 @@ export interface Project {
 export default function ManageProjectsPage() {
   const navigate = useNavigate();
   const [project, setProject] = useState<Project | null>(null);
+  const [projectName, setProjectName] = useState<string | null>();
+  const [projectDesc, setProjectDesc] = useState<string | null>();
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [projectToken, setProjectToken] = useState<string>('');
   const [token] = useState<string | null>(parseCookies().userToken || null);
   const [isVerified, setIsVerified] = useState<boolean>(false);
@@ -40,6 +43,93 @@ export default function ManageProjectsPage() {
     }
     fetchProjectData();
   }, [token, navigate]);
+
+  useEffect(() => {
+    setProjectName(project?.projectName);
+    setProjectDesc(project?.projectDesc);
+  }, [project]);
+
+  const handleProjectName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length < 4) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+
+    if (e.target.value === project?.projectName) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+    setProjectName(e.target.value);
+  };
+
+  const handleProjectDesc = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length < 4) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+
+    if (e.target.value === project?.projectDesc) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+
+    setProjectDesc(e.target.value);
+  };
+
+  const handleSubmit = async () => {
+    setIsDisabled(true);
+    if (!projectName || !projectDesc) return;
+    if (!projectName.trim() || !projectDesc.trim()) return;
+
+    toast.info('Updating Project Info...');
+    try {
+      const res = await server.patch(
+        `/api/project/${project?.slug}/`,
+        {
+          projectName,
+          projectDesc,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (res.status !== 200) {
+        console.error('Unexpected Response from Server', res.status);
+        toast.error('Unexpected Response from Server');
+        return;
+      }
+
+      setProjectToken(res.data.projectToken);
+
+      toast.success('Project Details Updated Successfully');
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 400) {
+          toast.warning('Please Re-Login to Continue', {
+            description: `status: ${error.response.status}`,
+          });
+          return;
+        }
+        if (error.response?.status === 401) {
+          toast.warning('Please Re-Login. Token Expired!');
+          return;
+        }
+      }
+      toast.error('Unexpected Error Occured');
+      toast.info('Please Try Again Later or Try after Relogin');
+    } finally {
+      setIsDisabled(false);
+    }
+  };
 
   const handleDisplayToken = (projectToken: string) => {
     return `**** **** **** **** **** **** **** **** ${projectToken.slice(-6)}`;
@@ -110,12 +200,18 @@ export default function ManageProjectsPage() {
               <div className="w-[60rem] flex-col space-y-5 items-center justify-center mt-8">
                 <div className=" flex flex-col gap-2">
                   <Label className="w-max">Project Name</Label>
-                  <Input defaultValue={project?.projectName} />
+                  <Input
+                    defaultValue={project?.projectName}
+                    onChange={handleProjectName}
+                  />
                 </div>
                 <Separator />
                 <div className=" flex flex-col gap-2">
                   <Label className="w-max">Project Description</Label>
-                  <Input defaultValue={project?.projectDesc} />
+                  <Input
+                    defaultValue={project?.projectDesc}
+                    onChange={handleProjectDesc}
+                  />
                 </div>
                 <Separator />
                 <div className="flex flex-col gap-2">
@@ -141,6 +237,19 @@ export default function ManageProjectsPage() {
                     />
                   </div>
                 </div>
+                <Separator />
+                <div className="text-sm font-semibold opacity-70">
+                  Note: Updating Project Details will auto-generate a New Token
+                </div>
+                <Button
+                  className="w-[10rem]"
+                  disabled={isDisabled}
+                  onClick={() => {
+                    handleSubmit();
+                  }}
+                >
+                  Update Project
+                </Button>
               </div>
             </div>
           </main>
