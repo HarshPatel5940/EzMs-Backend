@@ -58,6 +58,7 @@ export default function DeleteProjectDataDialog({
         ?.classList.add(...['border-red-500', 'border-2']);
       return;
     }
+    const toastId = toast.loading('Deleting Project Data...');
 
     try {
       const res = await server.delete(
@@ -94,6 +95,8 @@ export default function DeleteProjectDataDialog({
 
     setLoading(false);
     setOpen(false);
+    toast.success('Project Data Deleted Successfully');
+    toast.dismiss(toastId);
     return;
   };
 

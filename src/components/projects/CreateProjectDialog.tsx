@@ -54,6 +54,7 @@ export default function CreateProjectDialog({
     }
 
     try {
+      const toastId = toast.loading('Creating Project...');
       const res = await server.post(
         '/api/project/new',
         {
@@ -74,6 +75,10 @@ export default function CreateProjectDialog({
       const data = res.data;
       data.ProjectData = [];
       setProjects(prev => [...prev, data]);
+      toast.success('Project Created Successfully', {
+        description: `Project Name: ${projectName}`,
+      });
+      toast.dismiss(toastId);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {

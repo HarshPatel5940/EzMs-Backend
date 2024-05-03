@@ -74,8 +74,10 @@ export default function ManageProjectDataPage() {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
           destroyCookie(null, 'userToken');
-          navigate('/login');
-          toast.warning('Please Login to Continue');
+          toast.warning('Token Expired. Logging Out!');
+          setTimeout(() => {
+            navigate('/login');
+          }, 3000);
           return;
         }
         if (error.response?.status === 401) {

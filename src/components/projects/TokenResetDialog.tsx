@@ -46,7 +46,6 @@ export default function ResetProjectToken({
 
     if (deleteText !== 'confirm') {
       setLoading(false);
-      toast.warning('Please write "confirm" to confirm');
       document.getElementById('projectName')?.focus();
       document
         .getElementById('projectName')
@@ -55,6 +54,7 @@ export default function ResetProjectToken({
     }
 
     try {
+      const toastId = toast.warning('Please write "confirm" to confirm');
       const res = await server.post(
         `/api/project/${projectSlug}/token`,
         {},
@@ -73,6 +73,8 @@ export default function ResetProjectToken({
 
       const data = res.data.projectToken;
       setProjectToken(data);
+      toast.success('Token Reset Successfully');
+      toast.dismiss(toastId);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error) {

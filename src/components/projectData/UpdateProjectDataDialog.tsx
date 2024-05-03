@@ -57,7 +57,7 @@ export default function UpdateProjectDataDialog({
         ?.classList.add(...['border-red-500', 'border-2']);
       return;
     }
-
+    const toastId = toast.loading('Updating Image Data...');
     let res: AxiosResponse;
 
     try {
@@ -116,6 +116,9 @@ export default function UpdateProjectDataDialog({
     }
 
     setOpen(false);
+    toast.success('Image Data Updated Successfully');
+    toast.dismiss(toastId);
+
     return;
   };
 

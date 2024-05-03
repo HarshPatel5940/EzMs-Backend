@@ -46,6 +46,7 @@ export default function DeleteProjectDialog({
 
   const handleSubmit = async () => {
     setLoading(true);
+    const toastId = toast.loading('Deleting Project...');
     if (deleteText !== 'delete') {
       setLoading(false);
       toast.warning('Please write "delete" to confirm');
@@ -72,6 +73,8 @@ export default function DeleteProjectDialog({
       setProjects?.(prev =>
         prev.filter((project: Project) => project.slug !== projectSlug)
       );
+      toast.success('Project Deleted Successfully');
+      toast.dismiss(toastId);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {

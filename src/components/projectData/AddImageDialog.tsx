@@ -68,6 +68,7 @@ export default function CreateProjectDataDialog({
     }
 
     if (!image) return;
+    const toastId = toast.info('Uploading Data...');
 
     let res: AxiosResponse;
 
@@ -91,6 +92,11 @@ export default function CreateProjectDataDialog({
         toast.warning(`Unexpected Response Code - ${res.status}`);
         return;
       }
+      const data = res.data;
+
+      data.key = res.data.title;
+
+      setProjectData(prev => [...prev, data]);
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 400) {
@@ -112,13 +118,11 @@ export default function CreateProjectDataDialog({
       setLoading(false);
       return;
     }
-    const data = res.data;
 
-    data.key = res.data.title;
-
-    setProjectData(prev => [...prev, data]);
     setLoading(false);
     setOpen(false);
+    toast.success('Data Added Successfully');
+    toast.dismiss(toastId);
     return;
   };
 
