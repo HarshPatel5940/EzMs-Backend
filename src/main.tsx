@@ -11,6 +11,7 @@ import NotFoundPage from './pages/notFoundPage.tsx';
 import ProjectsPage from './pages/project/projectsPage.tsx';
 import ManageProjectDataPage from './pages/project/manageProjectData.tsx';
 import ManageProjectsPage from './pages/project/manageProject.tsx';
+import ManageProjectAccess from './components/projects/ManageProjectAccess.tsx';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: 'project/:projectId/manage',
         element: <ManageProjectsPage />,
+      },
+      {
+        path: 'project/:projectId/users/manage',
+        element: <ManageProjectAccess />,
       },
       {
         path: '*',

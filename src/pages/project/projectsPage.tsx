@@ -15,8 +15,10 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [projectCards, setProjectCards] = useState<React.ReactNode[]>([]);
   const [projects, setProjects] = useState<Array<Project>>([]);
+  const [debouncedProjects, setDebouncedProjects] = useState<Array<Project>>(
+    []
+  );
   const [token] = useState<string | null>(parseCookies().userToken || null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
@@ -33,7 +35,22 @@ export default function DashboardPage() {
   }, [token, navigate]);
 
   useEffect(() => {
-    handleProjects(projects, debouncedSearch);
+    if (!debouncedSearch) {
+      setDebouncedProjects(projects);
+    }
+
+    const filterdProjects = projects.filter(
+      project =>
+        project.slug.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        project.projectName
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()) ||
+        project.projectDesc
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase())
+    );
+
+    setDebouncedProjects(filterdProjects);
   }, [projects, debouncedSearch]);
 
   useEffect(() => {
@@ -114,57 +131,24 @@ export default function DashboardPage() {
     }
   };
 
-  function handleProjects(projects: Project[], debouncedSearch?: string) {
-    let projectCards: React.ReactNode[] = [];
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    projectCards = projects.map((project: Project) => {
-      if (!debouncedSearch) {
-        return (
-          <ProjectCard
-            key={project.slug}
-            slug={project.slug}
-            projectName={project.projectName}
-            projectDesc={project.projectDesc}
-            projectData={project.projectData?.length || 0}
-            updatedAt={project.updatedAt}
-            setProjects={setProjects}
-          />
-        );
-      }
-
-      if (
-        project.slug.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        project.projectName
-          .toLowerCase()
-          .includes(debouncedSearch.toLowerCase()) ||
-        project.projectDesc
-          .toLowerCase()
-          .includes(debouncedSearch.toLowerCase())
-      ) {
-        return (
-          <ProjectCard
-            key={project.slug}
-            slug={project.slug}
-            projectName={project.projectName}
-            projectDesc={project.projectDesc || ''}
-            projectData={project.projectData?.length || 0}
-            updatedAt={project.updatedAt}
-            setProjects={setProjects}
-          />
-        );
-      }
-    });
-
-    setProjectCards(projectCards);
-  }
-
   function displayProjectCards(): React.ReactNode {
     return (
       <div className="flex flex-col items-center">
-        {projectCards.length > 0 ? (
+        {projects.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">
-            {projectCards}
+            {debouncedProjects.map((project: Project) => {
+              return (
+                <ProjectCard
+                  key={project.slug}
+                  slug={project.slug}
+                  projectName={project.projectName}
+                  projectDesc={project.projectDesc || ''}
+                  projectData={project.projectData?.length || 0}
+                  updatedAt={project.updatedAt}
+                  setProjects={setProjects}
+                />
+              );
+            })}
           </div>
         ) : (
           <div className="text-center space-y-2">

@@ -152,7 +152,7 @@ export default function ManageProjectDataPage() {
               {/* // TODO: implement search functionality */}
               <Input
                 className="shadow-md bg-white dark:bg-gray-950"
-                placeholder="Search projects..."
+                placeholder="Search Inside Your Project..."
               />
               <Button className="sr-only" type="submit">
                 Submit
