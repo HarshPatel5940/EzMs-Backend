@@ -20,10 +20,11 @@ import { Express } from "express";
 
 import {
     projectAccessDto,
-    // projectAccessSchema,
+    projectAccessSchema,
     projectCreateDto,
     projectCreateSchema,
     ProjectDataDto,
+    projectDataSchema,
 } from "../../shared/dto";
 import {
     AuthRole,
@@ -81,9 +82,8 @@ export class ProjectController {
     @Post("/:slug/data/new")
     @PublicRoute()
     @UseInterceptors(FileInterceptor("image"))
-    // @UsePipes(new ZodValidationPipe(projectDataSchema)) TODO
     CreateProjectData(
-        @Body() dto: ProjectDataDto,
+        @Body(new ZodValidationPipe(projectDataSchema)) dto: ProjectDataDto,
         @Param("slug") slug: string,
         @UploadedFile(
             new ParseFilePipe({
@@ -108,8 +108,10 @@ export class ProjectController {
 
     @AuthRole(Roles.Admin)
     @Patch("/:slug")
-    // @UsePipes(new ZodValidationPipe(projectCreateSchema)) TODO
-    UpdateProject(@Param("slug") slug: string, @Body() dto: projectCreateDto) {
+    UpdateProject(
+        @Param("slug") slug: string,
+        @Body(new ZodValidationPipe(projectCreateSchema)) dto: projectCreateDto,
+    ) {
         try {
             return this.projectService.UpdateProject(slug, dto);
         } catch (error) {
@@ -122,12 +124,10 @@ export class ProjectController {
 
     @AuthRole(Roles.Verified)
     @Patch("/:slug/data/:id")
-    // todo: Pipes don't work when u infer from both params and body
-    // @UsePipes(new ZodValidationPipe(projectDataSchema))
     UpdateProjectData(
         @Param("slug") slug: string,
         @Param("id") id: string,
-        @Body() dto: ProjectDataDto,
+        @Body(new ZodValidationPipe(projectDataSchema)) dto: ProjectDataDto,
     ) {
         try {
             return this.projectService.UpdateProjectData(slug, id, dto);
@@ -167,10 +167,9 @@ export class ProjectController {
 
     @AuthRole(Roles.Admin)
     @Patch("/:slug/access")
-    // @UsePipes(new ZodValidationPipe(projectAccessSchema)) TODO
     UpdateProjectAccess(
-        @Body() dto: projectAccessDto,
         @Param("slug") slug: string,
+        @Body(new ZodValidationPipe(projectAccessSchema)) dto: projectAccessDto,
     ) {
         try {
             return this.projectService.UpdateProjectAccess(slug, dto);
