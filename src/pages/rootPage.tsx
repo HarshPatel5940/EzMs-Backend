@@ -1,8 +1,12 @@
 import MyNavbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
+import { parseCookies } from 'nookies';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function homePage() {
+  const [token] = useState<string | null>(parseCookies().userToken || null);
+
   return (
     <div>
       <MyNavbar />
@@ -19,9 +23,17 @@ export default function homePage() {
               {' '}
               A Simple yet Robust CMS.
             </p>
-            <Link to={'/signup'}>
-              <Button variant="link">Get Started. SignUp</Button>
-            </Link>
+            {token ? (
+              <Link to={'/projects'}>
+                <Button variant="link">
+                  You are Logged In! 🚀 Continue By Clicking Here...
+                </Button>
+              </Link>
+            ) : (
+              <Link to={'/signup'}>
+                <Button variant="link">Get Started. SignUp</Button>
+              </Link>
+            )}
           </div>
         </section>
       </main>

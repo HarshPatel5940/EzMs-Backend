@@ -17,11 +17,13 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function ResetProjectToken({
-  projectSlug,
   setProjectToken,
+  projectSlug,
+  isAdmin,
 }: {
   projectSlug: string;
   setProjectToken: React.Dispatch<React.SetStateAction<string>>;
+  isAdmin: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -107,7 +109,9 @@ export default function ResetProjectToken({
       }}
     >
       <DialogTrigger asChild>
-        <Button variant="destructive">Reset Token</Button>
+        <Button variant="destructive" disabled={!isAdmin}>
+          Reset Token
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[20rem] md:max-w-[28rem]">
         <DialogHeader>

@@ -33,6 +33,7 @@ export default function ManageProjectsPage() {
   const [projectToken, setProjectToken] = useState<string>('');
   const [token] = useState<string | null>(parseCookies().userToken || null);
   const [isVerified, setIsVerified] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const projectId = useParams().projectId;
 
   useEffect(() => {
@@ -41,6 +42,7 @@ export default function ManageProjectsPage() {
       toast.warning('Please Login to Continue');
       return;
     }
+    checkAdmin();
     fetchProjectData();
   }, [token, navigate]);
 
@@ -48,6 +50,17 @@ export default function ManageProjectsPage() {
     setProjectName(project?.projectName);
     setProjectDesc(project?.projectDesc);
   }, [project]);
+
+  const checkAdmin = async () => {
+    const res = await server.get('/api/admin/check', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.status === 200) {
+      setIsAdmin(true);
+    }
+  };
 
   const handleProjectName = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length < 4) {
@@ -190,6 +203,7 @@ export default function ManageProjectsPage() {
     <div className="flex flex-col w-full">
       <MyNavbar projectName={project?.projectName} />
       <div className="flex flex-row w-full">
+        {/* // TODO: Make Sidebar reposnsive for mobile */}
         <SideBar baseUrl={`/project/${project?.slug}`} />
         {isVerified && (
           <main className="flex flex-col min-h-screen bg-gray-200/40 flex-1 gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
@@ -207,6 +221,7 @@ export default function ManageProjectsPage() {
                   <Input
                     defaultValue={project?.projectName}
                     onChange={handleProjectName}
+                    disabled={!isAdmin}
                   />
                 </div>
                 <Separator />
@@ -215,6 +230,7 @@ export default function ManageProjectsPage() {
                   <Input
                     defaultValue={project?.projectDesc}
                     onChange={handleProjectDesc}
+                    disabled={!isAdmin}
                   />
                 </div>
                 <Separator />
@@ -238,6 +254,7 @@ export default function ManageProjectsPage() {
                     <ResetProjectToken
                       projectSlug={project?.slug as string}
                       setProjectToken={setProjectToken}
+                      isAdmin={isAdmin}
                     />
                   </div>
                 </div>
@@ -247,7 +264,7 @@ export default function ManageProjectsPage() {
                 </div>
                 <Button
                   className="w-[10rem]"
-                  disabled={isDisabled}
+                  disabled={isDisabled || !isAdmin}
                   onClick={() => {
                     handleSubmit();
                   }}

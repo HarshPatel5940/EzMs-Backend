@@ -4,6 +4,7 @@ import { Separator } from './ui/separator';
 
 export default function SideBar({ baseUrl }: { baseUrl: string }) {
   return (
+    // TODO: Make Sidebar reposnsive for mobile
     <div className="flex flex-col items-start h-screen p-3 gap-3">
       <Link to={baseUrl} className="w-full">
         <Button className="w-full text-center" variant={'ghost'}>

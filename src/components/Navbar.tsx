@@ -102,6 +102,7 @@ export default function MyNavbar({ projectName }: NavbarProps) {
     <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 max-h-14 sticky z-10">
       <nav className="flex items-center">{handleBreadcrumb()}</nav>
       <div className="flex items-center gap-4">
+        {/* // TODO: When we click the gh link, it should open a new tab like we have a _blank */}
         <Link to="https://github.com/HarshPatel5940/ezms-frontend">
           <img src="/github.svg" alt="GitHub" className="w-8 h-8" />
         </Link>
