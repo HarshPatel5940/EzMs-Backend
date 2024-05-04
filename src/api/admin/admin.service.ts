@@ -10,6 +10,24 @@ export class AdminService {
         private readonly pwd: PasswordService,
     ) {}
 
+    async GetUsers() {
+        const users = await this.prisma.user.findMany({
+            select: {
+                email: true,
+                name: true,
+            },
+        });
+
+        if (!users) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+
+        return { message: "Users Fetched Successfully", data: users };
+    }
+
     async VerifyUser(dto: userEmailDto) {
         const roleRes = await this.prisma.CompareUserRole(
             dto.email,

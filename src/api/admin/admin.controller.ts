@@ -26,6 +26,20 @@ export class AdminController {
         return { message: "Admin Verified Successfully" };
     }
 
+    @Get("/users")
+    @AuthRole(Roles.Admin)
+    @HttpCode(HttpStatus.OK)
+    GetUsers() {
+        try {
+            return this.adminService.GetUsers();
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
     @Patch("/verify/user")
     @AuthRole(Roles.Admin)
     @HttpCode(HttpStatus.OK)
