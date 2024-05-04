@@ -1,7 +1,6 @@
 import CreateProjectDialog from '@/components/projects/CreateProjectDialog';
 import MyNavbar from '@/components/Navbar';
 import ProjectCard from '@/components/ProjectCard';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import server from '@/lib/utils';
 import { AxiosError } from 'axios';
@@ -46,7 +45,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedSearch(search);
-    }, 500);
+    }, 350);
 
     return () => {
       clearTimeout(timeoutId);
@@ -135,13 +134,13 @@ export default function DashboardPage() {
       }
 
       if (
-        project.slug.toLowerCase().startsWith(debouncedSearch.toLowerCase()) ||
+        project.slug.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
         project.projectName
           .toLowerCase()
-          .startsWith(debouncedSearch.toLowerCase()) ||
+          .includes(debouncedSearch.toLowerCase()) ||
         project.projectDesc
           .toLowerCase()
-          .startsWith(debouncedSearch.toLowerCase())
+          .includes(debouncedSearch.toLowerCase())
       ) {
         return (
           <ProjectCard
@@ -186,16 +185,12 @@ export default function DashboardPage() {
       {isVerified && (
         <main className="flex min-h-screen bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
           <div className="max-w-6xl w-full mx-auto flex items-center gap-4">
-            {/* // TODO: implement search functionality */}
             <Input
               className="shadow-md bg-white dark:bg-gray-950"
               onChange={handleSearch}
               ref={inputRef}
               placeholder="Search projects..."
             />
-            <Button className="sr-only" type="submit">
-              Submit
-            </Button>
             {isAdmin && <CreateProjectDialog setProjects={setProjects} />}
           </div>
           {displayProjectCards()}
