@@ -143,6 +143,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 slug: slug,
             },
             data: {
+                slug: `${slug}-deleted-${new Date().getMilliseconds()}`,
                 isDeleted: true,
             },
             select: {
