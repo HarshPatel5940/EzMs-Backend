@@ -10,7 +10,7 @@ import server from '@/lib/utils';
 import { AxiosError } from 'axios';
 import { destroyCookie, parseCookies } from 'nookies';
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -27,10 +27,15 @@ export interface Project {
 
 export default function ManageProjectDataPage() {
   const navigate = useNavigate();
-  const [projectCards, setProjectCards] = useState<React.ReactNode[]>([]);
+  const [token] = useState<string | null>(parseCookies().userToken || null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [project, setProject] = useState<Project | null>(null);
   const [projectData, setProjectData] = useState<ProjectData[]>([]);
-  const [token] = useState<string | null>(parseCookies().userToken || null);
+  const [debouncedProjectData, setDebouncedProjectData] = useState<
+    ProjectData[]
+  >([]);
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const projectId = useParams().projectId;
 
@@ -50,8 +55,49 @@ export default function ManageProjectDataPage() {
   }, [project]);
 
   useEffect(() => {
-    handleProjectData(projectData);
-  }, [projectData]);
+    if (!debouncedSearch) {
+      setDebouncedProjectData(projectData);
+    }
+
+    const filterdProjectData = projectData.filter(
+      projectData =>
+        projectData.title
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()) ||
+        projectData.description
+          ?.toLowerCase()
+          .includes(debouncedSearch.toLowerCase()) ||
+        projectData.url
+          ?.toLowerCase()
+          .includes(debouncedSearch.toLowerCase()) ||
+        projectData.imageUrl
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase()) ||
+        projectData.id.toLowerCase().includes(debouncedSearch.toLowerCase())
+    );
+
+    setDebouncedProjectData(filterdProjectData);
+  }, [projectData, debouncedSearch]);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.value = search;
+    }
+  }, [search]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 350);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [search]);
+
+  function handleSearch() {
+    setSearch(inputRef.current?.value || '');
+  }
 
   const fetchProjectData = async () => {
     try {
@@ -100,41 +146,35 @@ export default function ManageProjectDataPage() {
     }
   };
 
-  function handleProjectData(projectData: ProjectData[]) {
-    let projectCards: React.ReactNode[] = [];
-    if (!project) {
-      return;
-    }
-
-    projectCards = projectData.map((project: ProjectData) => {
-      return (
-        <ProjectDataCard
-          id={project.id}
-          key={project.id}
-          title={project.title}
-          description={project.description}
-          imageUrl={project.imageUrl}
-          url={project.url}
-          createdAt={project.createdAt}
-          updatedAt={project.updatedAt}
-          projectId={project.projectId}
-          setProjectData={setProjectData}
-        />
-      );
-    });
-    setProjectCards(projectCards);
-  }
-
   function displayDataTable(): React.ReactNode {
     return (
       <div className="flex flex-col items-center w-full">
-        {projectCards.length > 0 ? (
+        {debouncedProjectData.length > 0 ? (
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 max-w-6xl w-full mx-auto">
-            {projectCards}
+            {debouncedProjectData.map((project: ProjectData) => {
+              return (
+                <ProjectDataCard
+                  id={project.id}
+                  key={project.id}
+                  title={project.title}
+                  description={project.description}
+                  imageUrl={project.imageUrl}
+                  url={project.url}
+                  createdAt={project.createdAt}
+                  updatedAt={project.updatedAt}
+                  projectId={project.projectId}
+                  setProjectData={setProjectData}
+                />
+              );
+            })}
           </div>
         ) : (
           <div className="text-center space-y-2">
-            <div className="text-4xl opacity-50">No Data Added Yet!</div>
+            <div className="text-4xl opacity-50">
+              {debouncedSearch
+                ? `No Projects with ${debouncedSearch} Found`
+                : 'No Projects Created Yet!'}
+            </div>
           </div>
         )}
       </div>
@@ -149,9 +189,10 @@ export default function ManageProjectDataPage() {
         {isVerified && (
           <main className="flex min-h-screen bg-gray-200/40 flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10 dark:bg-gray-800/40">
             <div className="max-w-6xl w-full mx-auto flex items-center gap-4">
-              {/* // TODO: implement search functionality */}
               <Input
                 className="shadow-md bg-white dark:bg-gray-950"
+                onChange={handleSearch}
+                ref={inputRef}
                 placeholder="Search Inside Your Project..."
               />
               <Button className="sr-only" type="submit">

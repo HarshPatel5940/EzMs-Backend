@@ -11,6 +11,8 @@ import { Button } from './ui/button';
 import { toast } from 'sonner';
 import DeleteImageDialog from '@/components/projectData/DeleteImageDialog';
 import UpdateProjectDialog from './projectData/UpdateProjectDataDialog';
+import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '@/lib/utils';
 
 export interface ProjectData {
   id: string;
@@ -41,15 +43,21 @@ export default function MyProjectDataCard(props: ProjectData) {
       </CardHeader>
       <CardContent className="space-y-1">
         <CardTitle>{props.title}</CardTitle>
-        <CardDescription>
+        <CardDescription className="flex flex-col space-y-3">
           {props.description ? props.description : 'No Descrpition Provided'}
+          <div>
+            Image Source URL:{' '}
+            <Link className="text-blue-500" to={props.imageUrl}>
+              Source 🔗
+            </Link>
+          </div>
         </CardDescription>
         <div className="flex align-middle">
           <LinkIcon size={21} className="pt-1" />
           {props.url ? (
-            <a className="text-blue-500" href={props.url}>
+            <Link className="text-blue-500" to={props.url}>
               {props.url}
-            </a>
+            </Link>
           ) : (
             <CardDescription>No Link Provided</CardDescription>
           )}
@@ -65,8 +73,13 @@ export default function MyProjectDataCard(props: ProjectData) {
           <Button
             className="w-full"
             onClick={() => {
-              navigator.clipboard.writeText(props.imageUrl);
-              toast.info('Copied to clipboard');
+              navigator.clipboard.writeText(
+                `${API_BASE_URL}/api/public/project/${props.projectId}/data/${props.id}`
+              );
+              toast('Copied to clipboard', {
+                description:
+                  'Make sure to use the Project Token to access this data!\nOrelse, Feel Free to use Source URL',
+              });
             }}
           >
             Copy 🔗
