@@ -15,6 +15,7 @@ export class AdminService {
             select: {
                 email: true,
                 name: true,
+                role: true,
             },
         });
 
@@ -49,6 +50,29 @@ export class AdminService {
             );
         }
         return { message: "User Verified Successfully", data: verifyRes };
+    }
+
+    async UnVerifyUser(dto: userEmailDto) {
+        const roleRes = await this.prisma.CompareUserRole(
+            dto.email,
+            "verified",
+        );
+
+        if (!roleRes) {
+            throw new HttpException(
+                "User Already UnVerified / Is An Admin",
+                HttpStatus.CONFLICT,
+            );
+        }
+        const verifyRes = await this.prisma.UnVerifyUser(dto.email);
+
+        if (!verifyRes) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+        return { message: "User UnVerified Successfully", data: verifyRes };
     }
 
     async CreateUser(dto: userEmailDto) {

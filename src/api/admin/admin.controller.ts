@@ -55,6 +55,21 @@ export class AdminController {
         }
     }
 
+    @Patch("/unverify/user")
+    @AuthRole(Roles.Admin)
+    @HttpCode(HttpStatus.OK)
+    @UsePipes(new ZodValidationPipe(userEmailSchema))
+    UnVerifyUser(@Body() dto: Omit<userEmailDto, "name">) {
+        try {
+            return this.adminService.UnVerifyUser(dto);
+        } catch (error) {
+            throw new HttpException(
+                "Something Went Wrong",
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
+        }
+    }
+
     @Post("/new/user")
     @HttpCode(HttpStatus.CREATED)
     @AuthRole(Roles.Admin)

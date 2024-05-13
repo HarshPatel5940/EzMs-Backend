@@ -121,6 +121,22 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         });
     }
 
+    async UnVerifyUser(email: string) {
+        return await this.user.update({
+            where: {
+                email: email,
+            },
+            data: {
+                role: "unverified",
+            },
+            select: {
+                email: true,
+                role: true,
+            },
+        });
+    }
+
+
     async CreateProject(
         projectSlug: string,
         projectName: string,
@@ -222,10 +238,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
                 },
                 data: {
                     users: {
-                        connect: AddAccess.map((email) => ({
+                        connect: AddAccess.map((email: string) => ({
                             email: email,
                         })),
-                        disconnect: RemoveAccess.map((email) => ({
+                        disconnect: RemoveAccess.map((email: string) => ({
                             email: email,
                         })),
                     },
