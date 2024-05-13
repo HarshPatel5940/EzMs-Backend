@@ -1,6 +1,6 @@
 import { Label, Separator } from '@radix-ui/react-dropdown-menu';
-import MyNavbar from '../Navbar';
-import SideBar from '../SideBar';
+import MyNavbar from '../../components/Navbar';
+import SideBar from '../../components/SideBar';
 import { destroyCookie, parseCookies } from 'nookies';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,10 +8,10 @@ import { toast } from 'sonner';
 import server from '@/lib/utils';
 import type { Project } from '@/pages/project/manageProjectData';
 import { AxiosError } from 'axios';
-import { Card, CardContent } from '../ui/card';
-import { Switch } from '../ui/switch';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { Card, CardContent } from '../../components/ui/card';
+import { Switch } from '../../components/ui/switch';
+import { Input } from '../../components/ui/input';
+import { Button } from '../../components/ui/button';
 
 export default function ManageProjectAccess() {
   const navigate = useNavigate();

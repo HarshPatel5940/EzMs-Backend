@@ -11,7 +11,7 @@ import NotFoundPage from './pages/notFoundPage.tsx';
 import ProjectsPage from './pages/project/projectsPage.tsx';
 import ManageProjectDataPage from './pages/project/manageProjectData.tsx';
 import ManageProjectsPage from './pages/project/manageProject.tsx';
-import ManageProjectAccess from './components/projects/ManageProjectAccess.tsx';
+import ManageProjectAccess from './pages/project/ManageProjectAccess.tsx';
 
 const router = createBrowserRouter([
   {
