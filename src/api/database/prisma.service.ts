@@ -136,7 +136,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
         });
     }
 
-
     async CreateProject(
         projectSlug: string,
         projectName: string,
