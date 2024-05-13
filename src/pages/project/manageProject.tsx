@@ -201,7 +201,7 @@ export default function ManageProjectsPage() {
 
   return (
     <div className="flex flex-col w-full">
-      <MyNavbar projectName={project?.projectName} />
+      <MyNavbar projectName={project?.projectName} isAdmin={isAdmin} />
       <div className="flex flex-row w-full">
         {/* // TODO: Make Sidebar reposnsive for mobile */}
         <SideBar baseUrl={`/project/${project?.slug}`} />

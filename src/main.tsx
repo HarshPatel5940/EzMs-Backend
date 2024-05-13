@@ -12,6 +12,7 @@ import ProjectsPage from './pages/project/projectsPage.tsx';
 import ManageProjectDataPage from './pages/project/manageProjectData.tsx';
 import ManageProjectsPage from './pages/project/manageProject.tsx';
 import ManageProjectAccess from './pages/project/ManageProjectAccess.tsx';
+import ManageUserAccess from './pages/admin/manageUserAccess.tsx';
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: 'project/:projectId/users/manage',
         element: <ManageProjectAccess />,
+      },
+      {
+        path: 'users/manage',
+        element: <ManageUserAccess />,
       },
       {
         path: '*',

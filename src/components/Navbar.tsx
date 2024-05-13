@@ -15,14 +15,20 @@ import {
   DropdownMenuContent,
   DropdownMenu,
 } from '@/components/ui/dropdown-menu';
-import { UserIcon, LogOutIcon } from 'lucide-react';
+import {
+  UserIcon,
+  LogOutIcon,
+  FolderKanbanIcon,
+  UsersIcon,
+} from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 
 interface NavbarProps {
   projectName?: string;
+  isAdmin?: boolean;
 }
 
-export default function MyNavbar({ projectName }: NavbarProps) {
+export default function MyNavbar({ projectName, isAdmin }: NavbarProps) {
   const navigate = useNavigate();
   const [token] = useState<string | null>(parseCookies().userToken || null);
 
@@ -34,6 +40,19 @@ export default function MyNavbar({ projectName }: NavbarProps) {
   const handleBreadcrumb = () => {
     const pathUrl = window.location.pathname.split('/');
     const list: ReactNode[] = [];
+
+    if (pathUrl[1].startsWith('users')) {
+      list.push(
+        <BreadcrumbItem>
+          <BreadcrumbLink
+            href="/projects"
+            className="text-gray-600 hover:text-gray-800 dark:text-white dark:hover:text-gray-300 hover:font-bold"
+          >
+            Manage Projects
+          </BreadcrumbLink>
+        </BreadcrumbItem>
+      );
+    }
 
     if (pathUrl[1].startsWith('project')) {
       list.push(
@@ -80,6 +99,20 @@ export default function MyNavbar({ projectName }: NavbarProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Link to={'/projects'} className="flex w-full">
+                <FolderKanbanIcon className="mr-2 h-4 w-4" />
+                Manage Projects
+              </Link>
+            </DropdownMenuItem>
+            {isAdmin && (
+              <DropdownMenuItem>
+                <Link to={'/users/manage'} className="flex w-full">
+                  <UsersIcon className="mr-2 h-4 w-4" />
+                  Manage Users
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onSelect={handleLogout}>
               <LogOutIcon className="mr-2 h-4 w-4" />
               Logout
@@ -102,8 +135,10 @@ export default function MyNavbar({ projectName }: NavbarProps) {
     <header className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 max-h-14 sticky z-10">
       <nav className="flex items-center">{handleBreadcrumb()}</nav>
       <div className="flex items-center gap-4">
-        {/* // TODO: When we click the gh link, it should open a new tab like we have a _blank */}
-        <Link to="https://github.com/HarshPatel5940/ezms-frontend">
+        <Link
+          to="https://github.com/HarshPatel5940/ezms-frontend"
+          target="_blank"
+        >
           <img src="/github.svg" alt="GitHub" className="w-8 h-8" />
         </Link>
         {handleDropdown()}
