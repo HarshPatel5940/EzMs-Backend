@@ -16,9 +16,7 @@ export default function DashboardPage() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [projects, setProjects] = useState<Array<Project>>([]);
-  const [debouncedProjects, setDebouncedProjects] = useState<Array<Project>>(
-    []
-  );
+  const [debouncedProjects, setDebouncedProjects] = useState<Array<Project>>([]);
   const [token] = useState<string | null>(parseCookies().userToken || null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isVerified, setIsVerified] = useState<boolean>(false);
@@ -42,12 +40,8 @@ export default function DashboardPage() {
     const filterdProjects = projects.filter(
       project =>
         project.slug.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        project.projectName
-          .toLowerCase()
-          .includes(debouncedSearch.toLowerCase()) ||
-        project.projectDesc
-          .toLowerCase()
-          .includes(debouncedSearch.toLowerCase())
+        project.projectName.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        project.projectDesc.toLowerCase().includes(debouncedSearch.toLowerCase()),
     );
 
     setDebouncedProjects(filterdProjects);
@@ -134,7 +128,7 @@ export default function DashboardPage() {
   function displayProjectCards(): React.ReactNode {
     return (
       <div className="flex flex-col items-center">
-        {projects.length > 0 ? (
+        {debouncedProjects.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-6xl w-full mx-auto">
             {debouncedProjects.map((project: Project) => {
               return (
@@ -153,9 +147,7 @@ export default function DashboardPage() {
         ) : (
           <div className="text-center space-y-2">
             <div className="text-4xl opacity-50">
-              {debouncedSearch
-                ? `No Projects with ${debouncedSearch} Found`
-                : 'No Projects Created Yet!'}
+              {debouncedSearch ? `No Projects with ${debouncedSearch} Found` : 'No Projects Created Yet!'}
             </div>
           </div>
         )}
@@ -181,9 +173,7 @@ export default function DashboardPage() {
         </main>
       )}
       <footer className="p-5 text-center bg-white dark:bg-gray-800">
-        <p className="text-gray-600 dark:text-gray-400">
-          © 2023 by HarshPatel5940. All rights reserved.
-        </p>
+        <p className="text-gray-600 dark:text-gray-400">© 2023 by HarshPatel5940. All rights reserved.</p>
       </footer>
     </div>
   );

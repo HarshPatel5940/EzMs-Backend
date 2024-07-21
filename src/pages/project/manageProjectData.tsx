@@ -1,9 +1,7 @@
 import MyNavbar from '@/components/Navbar';
 import SideBar from '@/components/SideBar';
 import AddImageDialog from '@/components/projectData/AddImageDialog';
-import ProjectDataCard, {
-  type ProjectData,
-} from '@/components/projectDataCard';
+import ProjectDataCard, { type ProjectData } from '@/components/projectDataCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import server from '@/lib/utils';
@@ -33,9 +31,7 @@ export default function ManageProjectDataPage() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [project, setProject] = useState<Project | null>(null);
   const [projectData, setProjectData] = useState<ProjectData[]>([]);
-  const [debouncedProjectData, setDebouncedProjectData] = useState<
-    ProjectData[]
-  >([]);
+  const [debouncedProjectData, setDebouncedProjectData] = useState<ProjectData[]>([]);
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const projectId = useParams().projectId;
 
@@ -61,19 +57,11 @@ export default function ManageProjectDataPage() {
 
     const filterdProjectData = projectData.filter(
       projectData =>
-        projectData.title
-          .toLowerCase()
-          .includes(debouncedSearch.toLowerCase()) ||
-        projectData.description
-          ?.toLowerCase()
-          .includes(debouncedSearch.toLowerCase()) ||
-        projectData.url
-          ?.toLowerCase()
-          .includes(debouncedSearch.toLowerCase()) ||
-        projectData.imageUrl
-          .toLowerCase()
-          .includes(debouncedSearch.toLowerCase()) ||
-        projectData.id.toLowerCase().includes(debouncedSearch.toLowerCase())
+        projectData.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        projectData.description?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        projectData.url?.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        projectData.imageUrl.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+        projectData.id.toLowerCase().includes(debouncedSearch.toLowerCase()),
     );
 
     setDebouncedProjectData(filterdProjectData);
@@ -171,9 +159,7 @@ export default function ManageProjectDataPage() {
         ) : (
           <div className="text-center space-y-2">
             <div className="text-4xl opacity-50">
-              {debouncedSearch
-                ? `No Projects with ${debouncedSearch} Found`
-                : 'No Projects Created Yet!'}
+              {debouncedSearch ? `No Project Data with ${debouncedSearch} Found` : 'No Project Data Added Yet!'}
             </div>
           </div>
         )}
@@ -198,19 +184,14 @@ export default function ManageProjectDataPage() {
               <Button className="sr-only" type="submit">
                 Submit
               </Button>
-              <AddImageDialog
-                projectSlug={projectId || ''}
-                setProjectData={setProjectData}
-              />
+              <AddImageDialog projectSlug={projectId || ''} setProjectData={setProjectData} />
             </div>
             {displayDataTable()}
           </main>
         )}
       </div>
       <footer className="p-5 text-center bg-white dark:bg-gray-800">
-        <p className="text-gray-600 dark:text-gray-400">
-          © 2023 by HarshPatel5940. All rights reserved.
-        </p>
+        <p className="text-gray-600 dark:text-gray-400">© 2023 by HarshPatel5940. All rights reserved.</p>
       </footer>
     </div>
   );
