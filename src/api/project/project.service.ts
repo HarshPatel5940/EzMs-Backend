@@ -65,7 +65,10 @@ export class ProjectService {
         }
 
         const targetRes = res.projectData.find((data: ProjectData) => {
-            if (data.projectId === slug && data.title === title) {
+            if (
+                data.projectId === slug &&
+                (data.title === title || data.id === title)
+            ) {
                 return data;
             }
         });

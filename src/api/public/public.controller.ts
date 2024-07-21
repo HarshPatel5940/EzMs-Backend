@@ -43,8 +43,9 @@ export class PublicController {
         @Req() req: Request,
         @Res() res: Response,
     ) {
-        const response: string =
-            (await this.cacheManager.get(req.url)) || req.url;
+        const response: string | undefined = await this.cacheManager.get(
+            req.url,
+        );
 
         if (response) {
             Logger.debug("Redirected Using Cache", "PublicController");
@@ -55,7 +56,10 @@ export class PublicController {
         const data = await this.project.GetProjectData(slug, title);
 
         if (!data) {
-            throw new HttpException("Project Not Found", HttpStatus.NOT_FOUND);
+            throw new HttpException(
+                `Project Not Found for ${slug} and ${title}`,
+                HttpStatus.NOT_FOUND,
+            );
         }
         const imageUrl = data.imageUrl;
 
